@@ -73,3 +73,88 @@ optimizesigma = 2.
 bootstrapnumsample = 1000
 plotstretchfactor = 1.00
 masslimtestfactor = 3
+
+#------------------------------------------------------------------------------
+###
+#------------------------------------------------------------------------------
+###
+#------------------------------------------------------------------------------
+
+###
+# Declares Math Functions
+###
+
+# Function: Define simple power law function
+def simplepowerlaw(M, M0, Gamma):
+
+	return (np.power((M / M0), Gamma))
+
+# Function: Define truncated power law function
+def truncatedpowerlaw(M, N0, M0, Gamma):
+
+	return N0 * (np.power((M / M0), Gamma) - 1)
+
+# Function: Define truncated power law function with a slope of -1
+def truncatedpowerlaw_1(M, N0, M0):
+
+	return N0 * (np.power((M / M0), -1.) - 1)
+
+# Function: Define Schechter Function
+def schechter(M, phi, M0, Gamma):
+
+	return phi * (np.power((M / M0), Gamma)) * np.exp(-(M / M0))
+
+# Function: Define Schechter Function with a slope of -1
+def schechter_1(M, phi, M0):
+
+	return phi * (np.power((M / M0), -1.)) * np.exp(-(M / M0))
+
+# Function: Define Schechter Function with a slope of -2
+def schechter_2(M, phi, M0):
+
+	return phi * (np.power((M / M0), -2.)) * np.exp(-(M / M0))
+
+# Function: Define simple power law function (log)
+def simplepowerlaw_log(logM, M0, Gamma):
+
+	return (Gamma * logM) - (Gamma * np.log10(M0))
+
+# Function: Define truncated power law function (log)
+def truncatedpowerlaw_log(logM, N0, M0, Gamma):
+
+	return np.log10(N0) + np.log10(np.power((np.power(10, logM) / M0), Gamma) - 1)
+
+# Function: Define truncated power law function (log) with a slope of -1
+def truncatedpowerlaw_1_log(logM, N0, M0):
+
+	return np.log10(N0) + np.log10(np.power((np.power(10, logM) / M0), -1.) - 1)
+
+# Function: Define truncated power law function (log) with a slope of -2
+def truncatedpowerlaw_2_log(logM, N0, M0):
+
+	return np.log10(N0) + np.log10(np.power((np.power(10, logM) / M0), -2.) - 1)
+
+# Function: Define Schechter Function (log)
+def schechter_log(logM, phi, M0, Gamma):
+
+	return  np.log10(phi) + (Gamma * logM) - (Gamma * np.log10(M0)) + np.log10(np.exp(-(np.power(10, logM) / M0)))
+
+# Function: Define Schechter Function (log) with a slope of -1
+def schechter_1_log(logM, phi, M0):
+
+	return  np.log10(phi) + (1. * logM) - (1. * np.log10(M0)) + np.log10(np.exp(-(np.power(10, logM) / M0)))
+
+# Function: Define Schechter Function (log) with a slope of -2
+def schechter_2_log(logM, phi, M0):
+
+	return  np.log10(phi) + (2. * logM) - (2. * np.log10(M0)) + np.log10(np.exp(-(np.power(10, logM) / M0)))
+
+# Function: Return the mean of the trace
+def trace_mean(x):
+	
+	return pd.Series(np.mean(x, 0), name = 'mean')
+
+# Function: Return the standard deviation of the trace
+def trace_sd(x):
+	
+	return pd.Series(np.std(x, 0), name = 'sd')
