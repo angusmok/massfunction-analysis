@@ -242,80 +242,271 @@ print('Import - AnalysisFunctions - v2020.08')
 #------------------------------------------------------------------------------
 
 ###
-# Declares Math Functions
+# (1) Math Functions
 ###
 
-# Function: Define simple power law function
 def simplepowerlaw(M, M0, Gamma):
+
+	'''
+	Function: Define simple power law function
+	'''
 
 	return (np.power((M / M0), Gamma))
 
-# Function: Define truncated power law function
 def truncatedpowerlaw(M, N0, M0, Gamma):
+
+	'''
+	Function: Define truncated power law function
+	'''
 
 	return N0 * (np.power((M / M0), Gamma) - 1)
 
-# Function: Define truncated power law function with a slope of -1
 def truncatedpowerlaw_1(M, N0, M0):
+
+	'''
+	Function: Define truncated power law function with a slope of -1
+	'''
 
 	return N0 * (np.power((M / M0), -1.) - 1)
 
-# Function: Define Schechter Function
 def schechter(M, phi, M0, Gamma):
+
+	'''
+	Function: Define Schechter Function
+	'''
 
 	return phi * (np.power((M / M0), Gamma)) * np.exp(-(M / M0))
 
-# Function: Define Schechter Function with a slope of -1
 def schechter_1(M, phi, M0):
+
+	'''
+	Function: Define Schechter Function with a slope of -1
+	'''
 
 	return phi * (np.power((M / M0), -1.)) * np.exp(-(M / M0))
 
-# Function: Define Schechter Function with a slope of -2
 def schechter_2(M, phi, M0):
+
+	'''
+	Function: Define Schechter Function with a slope of -2
+	'''
 
 	return phi * (np.power((M / M0), -2.)) * np.exp(-(M / M0))
 
-# Function: Define simple power law function (log)
 def simplepowerlaw_log(logM, M0, Gamma):
+
+	'''
+	Function: Define simple power law function (log)
+	'''
 
 	return (Gamma * logM) - (Gamma * np.log10(M0))
 
-# Function: Define truncated power law function (log)
 def truncatedpowerlaw_log(logM, N0, M0, Gamma):
+
+	'''
+	Function: Define truncated power law function (log)
+	'''
 
 	return np.log10(N0) + np.log10(np.power((np.power(10, logM) / M0), Gamma) - 1)
 
-# Function: Define truncated power law function (log) with a slope of -1
 def truncatedpowerlaw_1_log(logM, N0, M0):
+
+	'''
+	Function: Define truncated power law function (log) with a slope of -1
+	'''
 
 	return np.log10(N0) + np.log10(np.power((np.power(10, logM) / M0), -1.) - 1)
 
-# Function: Define truncated power law function (log) with a slope of -2
 def truncatedpowerlaw_2_log(logM, N0, M0):
+
+	'''
+	Function: Define truncated power law function (log) with a slope of -2
+	'''
 
 	return np.log10(N0) + np.log10(np.power((np.power(10, logM) / M0), -2.) - 1)
 
-# Function: Define Schechter Function (log)
 def schechter_log(logM, phi, M0, Gamma):
+
+	'''
+	Function: Define Schechter Function (log)
+	'''
 
 	return  np.log10(phi) + (Gamma * logM) - (Gamma * np.log10(M0)) + np.log10(np.exp(-(np.power(10, logM) / M0)))
 
-# Function: Define Schechter Function (log) with a slope of -1
 def schechter_1_log(logM, phi, M0):
+
+	'''
+	Function: Define Schechter Function (log) with a slope of -1
+	'''
 
 	return  np.log10(phi) + (1. * logM) - (1. * np.log10(M0)) + np.log10(np.exp(-(np.power(10, logM) / M0)))
 
-# Function: Define Schechter Function (log) with a slope of -2
 def schechter_2_log(logM, phi, M0):
+
+	'''
+	Function: Define Schechter Function (log) with a slope of -2
+	'''
 
 	return  np.log10(phi) + (2. * logM) - (2. * np.log10(M0)) + np.log10(np.exp(-(np.power(10, logM) / M0)))
 
-# Function: Return the mean of the trace
 def trace_mean(x):
+
+	'''
+	Function: Return the mean of the trace
+	'''
 	
 	return pd.Series(np.mean(x, 0), name = 'mean')
 
-# Function: Return the standard deviation of the trace
+
 def trace_sd(x):
+
+	'''
+	Function: Return the standard deviation of the trace
+	'''
 	
 	return pd.Series(np.std(x, 0), name = 'sd')
+
+def linefunction(x, m, b):
+
+	'''
+	Function: Define simple linear function
+	'''
+
+	return (m * x) + b
+
+###
+# (2) Printing Function
+###
+
+def printarraynumbering(array):
+
+	'''
+	Function: Print array with numbering
+	'''
+
+	string_out = ''
+	for i in range(0, len(array)):
+		string_out = string_out + '{}[{}], '.format(array[i], i)
+
+	print(string_out)
+
+	return 0
+
+###
+# (3) Declare Simple Functions
+###
+
+def rsquared(x, y):
+
+	'''
+	Function: Determine r-square value
+	'''
+
+	slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+	return r_value**2
+
+def reducedchisq(ydata, ymod, dof, sd): 
+
+	'''
+	Function: Returned chi-squared value
+	'''
+ 
+	chisq = np.sum(((ydata - ymod) / sd) ** 2) 
+			
+	nu = len(ydata) - 1 - dof
+	reducedchisq_val = chisq / nu
+
+	return reducedchisq_val       
+
+def log10_labels(x, pos):
+
+	'''
+	Function: Label with log instead of linear value
+	log10_labels_format = plt.FuncFormatter(log10_labels)
+	'''
+
+	return '%1i' % (np.log10(x))
+	
+def find_nearest2(array, value):
+	
+	'''
+	Function: Search for nearest value in ascending/descending values
+	'''
+
+	idx1, idx2 = 0, 0
+
+	# Go from start to end
+	for i in range(0, len(array)):
+
+		# Check if array value is less than true value (passes contour)
+		if array[i] < value and array[i] > 0.1:
+
+			# If value is at start, then just accept it
+			if i == 0:
+				idx1 = i
+			# Check if the previous array value was actually closer
+			elif abs(array[i - 1] - value) < abs(array[i] - value):
+				idx1 = i - 1
+
+			# If not, then accept it
+			else:
+				idx1 = i
+			break
+
+	# Go from end to start
+	for i in range(len(array) - 1, 0, -1):
+		if array[i] < value and array[i] > 0.1:
+			if i == len(array) - 1:
+				idx2 = i
+			elif abs(array[i + 1] - value) < abs(array[i] - value):
+				idx2 = i + 1
+			else:
+				idx2 = i
+			break
+
+	return idx1, idx2
+
+def find_nearest2guided(array, value, org_idx):
+	
+	'''
+	Function: Search for nearest value in guided
+	'''
+
+
+	idx1, idx2 = 0, len(array) - 1
+
+	# For lower bound, start at original index, then go to zero
+	for i in range(org_idx, 0, -1):
+
+		# Check if array value is greater than the true value (passes contour)
+		if array[i] > value:
+
+			# If value is at start, then just accept it
+			# Check if the previous array value was actually closer
+			if abs(array[i + 1] - value) < abs(array[i] - value):
+				idx1 = i + 1
+
+			# If not, then accept it
+			else:
+				idx1 = i
+
+			break
+
+	# For upper bound, start at orginal index, then go to end of array
+	for i in range(org_idx, len(array) - 1):
+
+
+		if array[i] > value:
+		
+			# If value is at start, then just accept it
+			# Check if the previous array value was actually closer
+			if abs(array[i - 1] - value) < abs(array[i] - value):
+				idx2 = i - 1
+			# If not, then accept it
+			else:
+				idx2 = i
+			break
+
+
+	return idx1, idx2
