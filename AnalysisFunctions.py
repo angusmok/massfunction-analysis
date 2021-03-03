@@ -555,8 +555,8 @@ def outputselectedcatalog(gal_array, outname, complimits):
 	print('Length of Output File (with cuts) {}:'.format(len(gal_array_age1_masslimit) + len(gal_array_age2_masslimit) + len(gal_array_age3_masslimit)))
 
 	if flag_output == 1:
-		f1 = open('./Logs/Output_' + outname +  '_Cut.txt', 'w')
-		f2 = open('./Logs/Output_' + outname +  '_Full.txt', 'w')
+		f1 = open('./Logs/ZZOutput_' + outname +  '_Cut.txt', 'w')
+		f2 = open('./Logs/ZZOutput_' + outname +  '_Full.txt', 'w')
 		for i in range(0, len(gal_array)):
 			if (gal_array[i][6] <= 10.01*1E6 and gal_array[i][4] > complimits[0]) or (gal_array[i][6] > 10.01*1E6 and gal_array[i][6] <= 100.01*1E6 and gal_array[i][4] > complimits[1]) or (gal_array[i][6] > 100.01*1E6 and gal_array[i][6] <= 400.01*1E6 and gal_array[i][4] > complimits[2]):
 				f1.write('{}, {:.1f}, {:.2f}\n'.format(gal_array[i][1], gal_array[i][4], np.log10(gal_array[i][6])))
@@ -1111,6 +1111,35 @@ def plotclumps_mr_clouds(axes, np_Full_array, np_array, np_NL_array, radiuslimit
 		axes.errorbar(np_NL_array[:,4], np_NL_array[:,6], xerr = np_NL_array[:,5], yerr = np_NL_array[:,7], linestyle = 'None', color = 'brown', markerfacecolor = 'brown', markeredgecolor = 'brown', marker = 's', markersize = 10, alpha = 0.5)
 		curvefit_powerlaw_clumps(np_array[:,4], np_array[:,6], axes, legendname = legendname)
 
+def plotclumps_mr_leaves(axes, np_Full_array, np_array, radiuslimit, plotcolour, plotsymbol, plotsym, legendname, masslimit = 0, radiuscut = 1):
+
+	'''
+	Function: 
+	'''	
+
+	np_L_array = np_array[np_array[:,8] == 1]
+	np_Full_L_array = np_Full_array[np_Full_array[:,8] == 1]
+
+	if radiuscut == 1:
+		axes.axhline(y = radiuslimit, color = 'k', linestyle = '--')
+	
+		if masslimit != 0:
+
+			np_L_AL_array = np_L_array[np_L_array[:,4] > masslimit]
+			np_AL_array = np_array[np_array[:,4] > masslimit]
+
+			axes.axvline(x = masslimit, color = 'k', linestyle = '--')
+			axes.plot(np_Full_L_array[:,4], np_Full_L_array[:,6], linestyle = 'None', markerfacecolor = 'None', markeredgecolor = plotcolour, marker = plotsymbol, markersize = 14, alpha = 0.9)
+			axes.errorbar(np_L_AL_array[:,4], np_L_AL_array[:,6], xerr = np_L_AL_array[:,5], yerr = np_L_AL_array[:,7], linestyle = 'None', color = 'green', marker = plotsymbol, markersize = 14, alpha = 0.9)
+			curvefit_powerlaw_clumps(np_L_AL_array[:,4], np_L_AL_array[:,6], axes, legendname = legendname)
+		else:
+			axes.plot(np_Full_L_array[:,4], np_Full_L_array[:,6], linestyle = 'None', markerfacecolor = 'None', markeredgecolor = plotcolour, marker = plotsymbol, markersize = 14, alpha = 0.9)
+			axes.errorbar(np_L_array[:,4], np_L_array[:,6], xerr = np_L_array[:,5], yerr = np_L_array[:,7], linestyle = 'None', color = 'green', marker = plotsymbol, markersize = 14, alpha = 0.9)
+			curvefit_powerlaw_clumps(np_L_array[:,4], np_L_array[:,6], axes, legendname = legendname)
+	else:
+		axes.errorbar(np_Full_L_array[:,4], np_Full_L_array[:,6], xerr = np_Full_L_array[:,5], yerr = np_Full_L_array[:,7], linestyle = 'None', color = 'green', marker = plotsymbol, markersize = 14, alpha = 0.9)
+		curvefit_powerlaw_clumps(np_Full_L_array[:,4], np_Full_L_array[:,6], axes, legendname = legendname)
+
 def curvefit_powerlaw_clumps(array1, array2, plotaxes, flag_mr = 1, legendname = ''):
 
 	'''
@@ -1154,9 +1183,31 @@ def extremegalarrays(galarray, galname):
 	string2 = galname + ' (0.18 - 0.50 Gyr)'
 	string3 = galname + ' (0.1 - 0.4 Gyr)'
 
-	print('Max: {} - {:.2f}'.format(string1, np.log10(np.nanmax(galarray1[:,4]))))
-	print('Max: {} - {:.2f}'.format(string2, np.log10(np.nanmax(galarray2[:,4]))))
-	print('Max: {} - {:.2f}'.format(string3, np.log10(np.nanmax(galarray3[:,4]))))
+	print('In {}, {} in {}, {} in {}, and {} in {}'.format(galname, len(galarray1), string1, len(galarray2), string2, len(galarray3), string3))
+
+	return galarray1, galarray2, galarray3, string1, string2, string3
+
+def phangsgalarrays(galarray, galname):
+
+	'''
+	Function: Print maximum mass object by age range
+	'''
+
+	galarray1_temp = galarray[galarray[:,6] > 1E8]
+	galarray1 = galarray1_temp[galarray1_temp[:,6] <= 1E9]
+	galarray2_temp = galarray[galarray[:,6] > np.power(10, 8.25)]
+	galarray2 = galarray2_temp[galarray2_temp[:,6] <= np.power(10, 8.7)]
+	galarray3_temp = galarray[galarray[:,6] > 1E8]
+	galarray3 = galarray3_temp[galarray3_temp[:,6] <= 4 * 1E8]
+
+	string1 = galname + ' (0.1 - 1 Gyr)'
+	string2 = galname + ' (0.18 - 0.50 Gyr)'
+	string3 = galname + ' (0.1 - 0.4 Gyr)'
+
+	print('In {}, {} in {}, {} in {}, and {} in {}'.format(galname, len(galarray1), string1, len(galarray2), string2, len(galarray3), string3))
+	if '1559' in galname:
+		galarray3_max = galarray3[np.argmax(galarray3[:,4])]
+		print('Note: Max in {}, array: {}'.format(string3, galarray3_max))
 
 	return galarray1, galarray2, galarray3, string1, string2, string3
 
@@ -1657,31 +1708,37 @@ def curve_fit1slopev2(array1_1, array1_2, array2_1, array2_2, array3, mass_lim_1
 # (9) Code Snippets (Other)
 ###
 
-def sextodecimal(ra, dec):
+# Import angle and unit fuctions
+from astropy.coordinates import Angle
+from astropy import units as u
+
+def sextodecimal_new(ra, dec):
 
 	'''
-	Function: Convert RA and DEC from sexagecimal to decimal
+	Function: Convert RA and DEC from sexagesimal to decimal
 	'''
 
-	ra_h, ra_m, ra_s = [float(i) for i in ra.split(':')]
-	if str(ra_h)[0] == '-':
-		ra_sign, ra_h_abs = -1, abs(ra_h)
-	else:
-		ra_sign, ra_h_abs = 1, ra_h
-	ra_decimal = (ra_h_abs * 15.) + (ra_m / 4.) + (ra_s / 240.)
-	ra_out = ra_decimal * ra_sign
+	input_ra = Angle(ra, unit = u.hour)
+	input_dec = Angle(dec, unit = u.deg)
+	ra_out = input_ra.degree
+	dec_out = input_dec.degree
 
-	dec_d, dec_m, dec_s = [float(i) for i in dec.split(':')]
-	if str(dec_d)[0] == '-':
-		dec_sign, dec_d_abs = -1, abs(dec_d)
-	else:
-		dec_sign, dec_d_abs = 1, dec_d
-	deg_decimal = dec_d_abs + (dec_m / 60.) + (dec_s / 3600.)
-	dec_out = deg_decimal * dec_sign
+	return ra_out, dec_out
 
-	outarray = (ra_out, dec_out)
+def decimaltosex(ra, dec):
 
-	return outarray
+	'''
+	Function: Convert RA and DEC from decimal to sexagesimal
+	'''
+
+	input_ra = Angle(ra, unit = u.deg)
+	input_dec = Angle(dec, unit = u.deg)
+	ra_out = input_ra.to_string(unit = u.hour, sep = ':')
+	dec_out = input_dec.to_string(unit = u.deg, sep = ':')
+	print(ra_out)
+	print(dec_out)
+
+	return ra_out, dec_out
 
 def returnposinfo(galname):
 	
@@ -2868,12 +2925,15 @@ def masteranalysisfunction(galname, gal_array, range_mass, typeflag, complimits,
 	elif typeflag == 0.5:
 		typename = 'XB'
 		print('>>> Start - XB Analysis')
+	elif typeflag == 1:
+		typename = 'GMC'
+		print('>>> Start - GMC Analysis')
 	elif typeflag == 2:
 		typename = 'SC'
 		print('>>> Start - SC Analysis')
 	elif typeflag == 3:
 		typename = 'SimSC'
-		print('>>> Start - SC Analysis')
+		print('>>> Start - SimSC Analysis')
 	else:
 		typename = 'Summary'
 		print('>>> Start - Summary Analysis')
@@ -3136,34 +3196,34 @@ def masteranalysisfunction(galname, gal_array, range_mass, typeflag, complimits,
 				gc.save('./Figures' + typename + '/' + galname + '_P0A1_' + typename + '_Position_Age_02.png')
 				gc.close()
 
-				### --==--==--==-- ###
-				print('>>>')
-				print('>>> ' + galname + '_P0A2_' + typename + '_Position_Mass')
-				print('>>>')
-				gc = aplpy.FITSFigure(DSS_folder + galnameout + '_DSS.fits')
-				gc.show_grayscale()
-				gc.set_title(galnameout)
-				if galname != 'M31':
-					gc.recenter(RA, DEC + (0.25 * LONGAXIS), LONGAXIS * plotstretchfactor)
-				if flag_XB != 1:
-					if len(gal_array_mass1[:,2]) > 0:
-						gc.show_markers(np.asarray(gal_array_mass1[:,2], dtype = np.float32), np.asarray(gal_array_mass1[:,3], dtype = np.float32), marker = 'o', c = 'blue', s = 4, alpha = 0.95, label = r'M <= 10$^{4}$ M$_\odot$')
-					if len(gal_array_mass2[:,2]) > 0:
-						gc.show_markers(np.asarray(gal_array_mass2[:,2], dtype = np.float32), np.asarray(gal_array_mass2[:,3], dtype = np.float32), marker = 'o', c = 'green', s = 4, alpha = 0.95, label = r'10$^{4}$ M$_\odot$ < M <= 10$^{6}$ M$_\odot$')
-					if len(gal_array_mass3[:,2]) > 0:
-						gc.show_markers(np.asarray(gal_array_mass3[:,2], dtype = np.float32), np.asarray(gal_array_mass3[:,3], dtype = np.float32), marker = 'o', c = 'red', s = 4, alpha = 0.95, label = r'M > 10$^{6}$ M$_\odot$')
-				else:
-					if len(gal_array_mass1[:,2]) > 0:
-						gc.show_markers(np.asarray(gal_array_mass1[:,2], dtype = np.float32), np.asarray(gal_array_mass1[:,3], dtype = np.float32), marker = 'o', c = 'blue', s = 4, alpha = 0.95, label = r'L <= 10$^{36}$ ergs/s')
-					if len(gal_array_mass2[:,2]) > 0:
-						gc.show_markers(np.asarray(gal_array_mass2[:,2], dtype = np.float32), np.asarray(gal_array_mass2[:,3], dtype = np.float32), marker = 'o', c = 'green', s = 4, alpha = 0.95, label = r'10$^{36}$ ergs/s < L <= 10$^{38}$ ergs/s')
-					if len(gal_array_mass3[:,2]) > 0:
-						gc.show_markers(np.asarray(gal_array_mass3[:,2], dtype = np.float32), np.asarray(gal_array_mass3[:,3], dtype = np.float32), marker = 'o', c = 'red', s = 4, alpha = 0.95, label = r'L > 10$^{38}$ ergs/s')
-				gc.show_polygons(POLYPATH, lw = 2, alpha = 0.5)
-				plt.legend(loc = 'upper right', title = 'N = {}'.format(gal_array_len))
-				gc.show_polygons(POLYPATH, lw = 2, alpha = 0.5)
-				gc.save('./Figures' + typename + '/' + galname + '_P0A2_' + typename + '_Position_Mass.png')
-				gc.close()
+			### --==--==--==-- ###
+			print('>>>')
+			print('>>> ' + galname + '_P0A2_' + typename + '_Position_Mass')
+			print('>>>')
+			gc = aplpy.FITSFigure(DSS_folder + galnameout + '_DSS.fits')
+			gc.show_grayscale()
+			gc.set_title(galnameout)
+			if galname != 'M31':
+				gc.recenter(RA, DEC + (0.25 * LONGAXIS), LONGAXIS * plotstretchfactor)
+			if flag_XB != 1:
+				if len(gal_array_mass1[:,2]) > 0:
+					gc.show_markers(np.asarray(gal_array_mass1[:,2], dtype = np.float32), np.asarray(gal_array_mass1[:,3], dtype = np.float32), marker = 'o', c = 'blue', s = 4, alpha = 0.95, label = r'M <= 10$^{4}$ M$_\odot$')
+				if len(gal_array_mass2[:,2]) > 0:
+					gc.show_markers(np.asarray(gal_array_mass2[:,2], dtype = np.float32), np.asarray(gal_array_mass2[:,3], dtype = np.float32), marker = 'o', c = 'green', s = 4, alpha = 0.95, label = r'10$^{4}$ M$_\odot$ < M <= 10$^{6}$ M$_\odot$')
+				if len(gal_array_mass3[:,2]) > 0:
+					gc.show_markers(np.asarray(gal_array_mass3[:,2], dtype = np.float32), np.asarray(gal_array_mass3[:,3], dtype = np.float32), marker = 'o', c = 'red', s = 4, alpha = 0.95, label = r'M > 10$^{6}$ M$_\odot$')
+			else:
+				if len(gal_array_mass1[:,2]) > 0:
+					gc.show_markers(np.asarray(gal_array_mass1[:,2], dtype = np.float32), np.asarray(gal_array_mass1[:,3], dtype = np.float32), marker = 'o', c = 'blue', s = 4, alpha = 0.95, label = r'L <= 10$^{36}$ ergs/s')
+				if len(gal_array_mass2[:,2]) > 0:
+					gc.show_markers(np.asarray(gal_array_mass2[:,2], dtype = np.float32), np.asarray(gal_array_mass2[:,3], dtype = np.float32), marker = 'o', c = 'green', s = 4, alpha = 0.95, label = r'10$^{36}$ ergs/s < L <= 10$^{38}$ ergs/s')
+				if len(gal_array_mass3[:,2]) > 0:
+					gc.show_markers(np.asarray(gal_array_mass3[:,2], dtype = np.float32), np.asarray(gal_array_mass3[:,3], dtype = np.float32), marker = 'o', c = 'red', s = 4, alpha = 0.95, label = r'L > 10$^{38}$ ergs/s')
+			gc.show_polygons(POLYPATH, lw = 2, alpha = 0.5)
+			plt.legend(loc = 'upper right', title = 'N = {}'.format(gal_array_len))
+			gc.show_polygons(POLYPATH, lw = 2, alpha = 0.5)
+			gc.save('./Figures' + typename + '/' + galname + '_P0A2_' + typename + '_Position_Mass.png')
+			gc.close()
 
 	### --==--==--==-- ###
 	plt.rcParams['xtick.labelsize'] = 42
@@ -5068,7 +5128,7 @@ def plotgal_likelihood(gal_array, galname, complimits, plotrow, axes, flag):
 
 	return 0
 
-def plotaxes_likelihood(gal_array, galname, complimits, plotaxes, ageflag, loc, sigma, output, outputfile, cutoff_mass_mult = 100):
+def plotaxes_likelihood(gal_array, galname, complimits, plotaxes, ageflag, loc, sigma, output, outputfile, cutoff_mass_mult = 100, flag_simple = 0):
 
 	'''
 	Function: Make One Likelihood Plot at Chosen Location
@@ -5085,32 +5145,32 @@ def plotaxes_likelihood(gal_array, galname, complimits, plotaxes, ageflag, loc, 
 
 	if ageflag == 1:
 		if len(gal_array_masslimit) > 0:
-			likelihoodplot(gal_array_masslimit, galname, '_A1', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult)
+			likelihoodplot(gal_array_masslimit, galname, '_A1', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult, flag_simple = flag_simple)
 	elif ageflag == 2:
 		if len(gal_array_masslimit) > 0:
-			likelihoodplot(gal_array_masslimit, galname, '_A2', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult)
+			likelihoodplot(gal_array_masslimit, galname, '_A2', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult, flag_simple = flag_simple)
 	elif ageflag == 3:
 		if len(gal_array_masslimit) > 0:
-			likelihoodplot(gal_array_masslimit, galname, '_A3', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult)
+			likelihoodplot(gal_array_masslimit, galname, '_A3', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult, flag_simple = flag_simple)
 	elif ageflag == 5:
 		if len(gal_array_masslimit) > 0:
-			likelihoodplot(gal_array_masslimit, galname, '_A5', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult)
+			likelihoodplot(gal_array_masslimit, galname, '_A5', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult, flag_simple = flag_simple)
 	elif ageflag == 0:
 		if len(gal_array_masslimit) > 0:
-			likelihoodplot(gal_array_masslimit, galname, '_AL', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult)
-	elif ageflag == -1:
+			likelihoodplot(gal_array_masslimit, galname, '_AL', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult, flag_simple = flag_simple)
+	elif ageflag == -1 or ageflag in ['XB_comb']:
 		if len(gal_array_masslimit) > 0:
-			likelihoodplot(gal_array_masslimit, galname, 'XB_comb', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult)
+			likelihoodplot(gal_array_masslimit, galname, 'XB_comb', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult, flag_simple = flag_simple)
 	elif ageflag in ['C']:
 		if len(gal_array_masslimit) > 0:
-			likelihoodplot(gal_array_masslimit, galname, 'C', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult)
+			likelihoodplot(gal_array_masslimit, galname, 'C', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult, flag_simple = flag_simple)
 	elif ageflag in ['GMC', 'GMC_P']:
-		likelihoodplot(gal_array_masslimit, galname, 'GMC', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult)
+		likelihoodplot(gal_array_masslimit, galname, 'GMC', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult, flag_simple = flag_simple)
 	else:
 		if len(gal_array_masslimit) > 0:
-			likelihoodplot(gal_array_masslimit, galname, '', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult)
+			likelihoodplot(gal_array_masslimit, galname, '', plotaxes, loc, sigma, output, outputfile, cutoff_mass_mult, flag_simple = flag_simple)
 
-def likelihoodplot(array, galname, agename, plotaxes, loc, sigma, output_flag, outputfile, cutoff_mass_mult = 100):
+def likelihoodplot(array, galname, agename, plotaxes, loc, sigma, output_flag, outputfile, cutoff_mass_mult = 100, flag_simple = 0):
 
 	'''
 	Function: Make One Likelihood Plot at Chosen Location
@@ -5150,11 +5210,11 @@ def likelihoodplot(array, galname, agename, plotaxes, loc, sigma, output_flag, o
 		M_grid = np.power(10, np.linspace(M0_low, M0_high, 91))
 		plot_likexticks = [5.0, 6.0, 7.0, 8.0]
 		plot_likeyticks = [0.0, 1.0, 2.0, 3.0]
-	elif galname in ['M101L1', 'M101L2', 'M101L1_cut', 'M101L2_cut'] or agename in ['XB_comb', 'XB', 'XB_P']:
-		M0_low = 4.0
+	elif agename in ['XB_comb']:
+		M0_low = 3.0
 		M0_high = 8.0
-		M_grid = np.power(10, np.linspace(M0_low, M0_high, 81))
-		plot_likexticks = [5.0, 6.0, 7.0]
+		M_grid = np.power(10, np.linspace(M0_low, M0_high, 101))
+		plot_likexticks = [4.0, 5.0, 6.0, 7.0]
 		plot_likeyticks = [0.0, 1.0, 2.0, 3.0]
 	elif agename in ['XB', 'XB_P']:
 		M0_low = 4.5
@@ -5168,12 +5228,10 @@ def likelihoodplot(array, galname, agename, plotaxes, loc, sigma, output_flag, o
 		M_grid = np.power(10, np.linspace(M0_low, M0_high, 101))
 		plot_likexticks = [2.0, 3.0, 4.0, 5.0]
 		plot_likeyticks = [0.0, 1.0, 2.0, 3.0]
-		loc_label_x = 3.5
-		loc_label_y = 2.5
 	else:
-		M0_low = 3.5
+		M0_low = 3.0
 		M0_high = 7.5
-		M_grid = np.power(10, np.linspace(M0_low, M0_high, 81))
+		M_grid = np.power(10, np.linspace(M0_low, M0_high, 91))
 		plot_likexticks = [4.0, 5.0, 6.0, 7.0]
 		plot_likeyticks = [0.0, 1.0, 2.0, 3.0]
 
@@ -5593,23 +5651,20 @@ def likelihoodplot(array, galname, agename, plotaxes, loc, sigma, output_flag, o
 	locval = [3.75, 2.75]
 	if loc != 0:
 	 	locval = loc
-	elif agename == 'GMC':
+	elif agename in ['GMC', 'GMC_P']:
 		locval = [6.50, 1.00]
+	elif agename in ['XB_comb']:
+		locval = [4.50, 2.50]
 	print('Final locval value: {}'.format(locval))
 
-	flag_simple = 1
+	# flag_simple = 1
 	galnameout = galnameoutfun(galname)
 
 	# Set legend labels
-	# if agename == '':
-	# 	plotaxes.text(locval[0], locval[1], 'N = {}'.format(len(array4)), fontsize = 36, verticalalignment = 'top', bbox = boxprops)
-	# elif flag_simple == 1 or galname in ['Dwarf_Test']:
-
-	plotaxes.text(locval[0], locval[1], galnameout + '\n     N = {}'.format(len(array4)), fontsize = 36, verticalalignment = 'top', bbox = boxprops)
-	# plotaxes.text(locval[0], locval[1], galnameout, fontsize = 36, verticalalignment = 'top', bbox = boxprops)
-
-	# else:
-	# 	plotaxes.text(locval[0], locval[1], galnameout + ' (' + ageout + '): \n     N = {}'.format(len(array4)), fontsize = 36, verticalalignment = 'top', bbox = boxprops)
+	if agename in ['XB_comb'] or flag_simple == 1:
+		plotaxes.text(locval[0], locval[1], galnameout, fontsize = 36, verticalalignment = 'top', bbox = boxprops)
+	else:
+		plotaxes.text(locval[0], locval[1], galnameout + '\n     N = {}'.format(len(array4)), fontsize = 36, verticalalignment = 'top', bbox = boxprops)
 	
 	# Plot dotted lines
 	if flag_success == 1:
@@ -5624,15 +5679,15 @@ def likelihoodplot(array, galname, agename, plotaxes, loc, sigma, output_flag, o
 
 	return likelihoodplot_out
 
-def plotaxes_agemass(gal_array, galname, complimits, plotaxes, flag):
+def plotaxes_agemass(gal_array, galname, complimits, plotaxes, flag, clustermarker = 'ro'):
 	
 	'''
 	Function: Make one age-mass plot at chosen location
 	'''
 
-	print('Starting {} - Age-Mass (plotaxes)'.format(galname))
+	print('Plotting {} - Age-Mass (plotaxes)'.format(galname))
 
-	plotaxes.plot(gal_array[:,6], gal_array[:,4], 'ro', markersize = 4, alpha = 0.4)
+	plotaxes.plot(gal_array[:,6], gal_array[:,4], clustermarker, markersize = 4, alpha = 0.4)
 	
 	# Plot
 	if flag == 1:
@@ -5646,9 +5701,14 @@ def plotaxes_agemass(gal_array, galname, complimits, plotaxes, flag):
 	elif flag == 2:
 		plotaxes.plot([np.power(10, 5.8), 2 * np.power(10, 8)], [complimits[2], complimits[2]], 'k--')
 		plotaxes.plot([2 * np.power(10, 8), 2 * np.power(10, 8)], [complimits[2], 1.5 * np.nanmax(gal_array[:,4])], 'k--')
+	# Plot only 100 - 400 Myr
+	elif flag == 3:
+		plotaxes.plot([np.power(10, 8), np.power(10, 8)], [complimits[2], 1.5 * np.nanmax(gal_array[:,4])], 'k--')
+		plotaxes.plot([np.power(10, 8), 4 * np.power(10, 8)], [complimits[2], complimits[2]], 'k--')
+		plotaxes.plot([4 * np.power(10, 8), 4 * np.power(10, 8)], [complimits[2], 1.5 * np.nanmax(gal_array[:,4])], 'k--')
 
-	plotaxes.legend(title = galname, loc = 'upper left', fontsize = 80)
-
+	# plotaxes.legend(title = galname, loc = 'upper left', fontsize = 80)
+	plotaxes.annotate(galname, xy = (0.1, 0.80), xycoords='axes fraction', fontsize = 20)
 	return 0
 
 def plotaxes_histogram(gal_array, galname, complimits, plotaxes, ageflag, outflag):
@@ -5690,7 +5750,7 @@ def plotaxes_histogram(gal_array, galname, complimits, plotaxes, ageflag, outfla
 		n, bins, bins_width, bins_centre, n_fit, bins_fit, n_dM, n_fit_dM, n_dlogM, n_fit_dlogM, ncum, ncum_fit, n_fit_err, n_fit_dM_err, n_fit_dlogM_err = makearrayhist(gal_array_masslimit, mass_bins_log, np.nanmax(complimits))
 		histogramplot(galname, age_label, bins, n_dM, bins_fit, n_fit_dM, n_fit_dM_err, np.nanmax(complimits), array_plot, plotaxes, len(gal_array_masslimit), outflag)
 
-def plotaxes_equalhistogram(gal_array, galname, complimits, plotaxes, ageflag, outflag, numgal_bin_in = 5):
+def plotaxes_equalhistogram(gal_array, galname, complimits, plotaxes, ageflag, outflag, numgal_bin_in = 5, outputbinstofile = False):
 
 	'''
 	Function: Make one histogram plot at chosen location
@@ -5702,8 +5762,6 @@ def plotaxes_equalhistogram(gal_array, galname, complimits, plotaxes, ageflag, o
 	array_plot = np.power(10, np.linspace(np.log10(np.min(mass_bins_log)), np.log10(np.max(mass_bins_log))))
 
 	gal_array_masslimit, age_label, gal_array_out = agecuts_outputarrays(gal_array, galname, complimits, ageflag)
-	# print(gal_array_masslimit)
-	# print(gal_array_masslimit[0])
 
 	# Could be renamed to add 'equal' terminology
 	if ageflag == 1:
@@ -5718,6 +5776,12 @@ def plotaxes_equalhistogram(gal_array, galname, complimits, plotaxes, ageflag, o
 		if len(gal_array_masslimit) > 0:
 			n_age3, bins_age3, bins_width_age3, bins_centre_age3, n_fit_age3, bins_fit_age3, n_dM_age3, n_fit_dM_age3, n_dlogM_age3, n_fit_dlogM_age3, ncum_age3, ncum_fit_age3, n_fit_age3_err, n_fit_dM_age3_err, n_fit_dlogM_age3_err = makearrayhistequal(gal_array_masslimit, complimits[2], -1, numgal_bin_in = numgal_bin_in)
 			histogramplot(galname, age_label, bins_age3, n_dM_age3, bins_fit_age3, n_fit_dM_age3, n_fit_dM_age3_err, complimits[2], array_plot, plotaxes, len(gal_array_masslimit), outflag)
+			# Print Bins to File
+			if outputbinstofile == True:
+				f1 = open('./Logs/ZOutput_' + galname +  '_Bins.txt', 'w')
+				for i in range(0, len(n_fit_dM_age3)):
+					print('{}, {}, {}'.format(bins_fit_age3[i], n_fit_dM_age3[i], n_fit_dM_age3_err[i]))
+				f1.close()
 	elif ageflag == 5:
 		if len(gal_array_masslimit) > 0:
 			n_age5, bins_age5, bins_width_age5, bins_centre_age5, n_fit_age5, bins_fit_age5, n_dM_age5, n_fit_dM_age5, n_dlogM_age5, n_fit_dlogM_age5, ncum_age5, ncum_fit_age5, n_fit_age5_err, n_fit_dM_age5_err, n_fit_dlogM_age5_err = makearrayhistequal(gal_array_masslimit, complimits[2], -1, numgal_bin_in = numgal_bin_in)
@@ -5791,7 +5855,6 @@ def plotaxes_mspecfit(gal_array, galname, complimits, plotaxes, ageflag, errorfl
 			mspecfitplot(gal_array_out[:,4], gal_array_masslimit[:,4], np.nanmax(complimits), plotaxes, galname, '', errorflag, plotflag = plotflag)
 
 def mspecfitplot(array1, array1_masslimit, complimits_val, plotaxes, galname, agename, errorflag, plotflag = 1, flagcol = 1):
-
 
 	'''
 	Function: Plot MSpecFit (subfunction for plotaxes_mmspecfit)
@@ -5920,7 +5983,9 @@ def mspecfitplot(array1, array1_masslimit, complimits_val, plotaxes, galname, ag
 		plotaxes.plot(mass_bins_log_plot, simplepowerlaw(mass_bins_log_plot, *fit_pl_out), 'k-.', label = r'PL ($-\beta$ = {:.1f} $\pm$ {:.1f})'.format(-fit_pl[2], fit_pl[5]))
 		plotaxes.plot(mass_bins_log_plot, truncatedpowerlaw(mass_bins_log_plot, *fit_out), 'k:', label = r'TPL (N$_c$ = {:.1f} $\pm$ {:.1f})'.format(fit[0], fit[3]))
 	else:
-		plotaxes.plot(mass_bins_log_plot, simplepowerlaw(mass_bins_log_plot, *fit_pl_out), 'k-.', label = r'$\beta$ = -{:.1f} $\pm$ {:.1f}'.format(-fit_pl[2], fit_pl[5]))
+		# plotaxes.plot(mass_bins_log_plot, simplepowerlaw(mass_bins_log_plot, *fit_pl_out), 'k-.', label = r'$\beta$ = -{:.1f} $\pm$ {:.1f}'.format(-fit_pl[2], fit_pl[5]))
+		plotaxes.plot(mass_bins_log_plot, simplepowerlaw(mass_bins_log_plot, *fit_pl_out), 'k-.', label = r'PL ($-\beta$ = {:.1f} $\pm$ {:.1f})'.format(-fit_pl[2], fit_pl[5]))
+		plotaxes.plot(mass_bins_log_plot, truncatedpowerlaw(mass_bins_log_plot, *fit_out), 'k:', label = r'TPL (N$_c$ = {:.1f} $\pm$ {:.1f})'.format(fit[0], fit[3]))
 		
 	if plotflag != 3:
 		plotaxes.legend(loc = 'upper right', title = galname, framealpha = 1.0)
@@ -6126,7 +6191,7 @@ def calccorrectionfactor1(array1, lowlimit):
 	print('The min/max mass in the synthetic cluster catalog is: {:.3e}/{:.3e}'.format(np.nanmin(array1), np.nanmax(array1)))
 	restrictedmass = np.sum(array1[array1 > lowlimit])
 	correctionfactor = restrictedmass / totalmass
-	print('Output: Cut at {:.2f} - Correction Factor {:.3f}'.format(np.log10(lowlimit), correctionfactor))
+	print('Output (1): Cut at {:.2f} - Correction Factor {:.3f}'.format(np.log10(lowlimit), correctionfactor))
 
 	return correctionfactor
  
@@ -6139,9 +6204,10 @@ def calccorrectionfactor2(array1, lowlimit, highlimit):
 	array1_belowlimit = array1[array1 < highlimit]
 	totalmass = np.sum(array1_belowlimit)
 	print('The total mass in the synthetic cluster catalog is: {:.3e} below log M = {:.2f}'.format(totalmass, np.log10(highlimit)))
+	print('The min mass in the synthetic cluster catalog is: {:.3e}'.format(np.nanmin(array1)))
 	restrictedmass = np.sum(array1[array1 > lowlimit])
 	correctionfactor = restrictedmass / totalmass
-	print('Output: Cut at {:.2f} - Correction Factor {:.3f}'.format(np.log10(lowlimit), correctionfactor))
+	print('Output (2): Cut at {:.2f} - Correction Factor {:.3f}'.format(np.log10(lowlimit), correctionfactor))
 
 	return correctionfactor
 
@@ -6334,11 +6400,14 @@ def plotaxes_xb_histogram(gal_array_masslimit, complimits, marker, color, label,
 
 	return 0
 
-def overplot_histogram(array1, complimits_val, linetype, labelshape, labelcolour, textlabel, norm_val = 0, sortindex = -1, massindex = 4, equal = False):
+def overplot_histogram(array1, complimits_val, linetype, labelshape, labelcolour, textlabel, norm_val = 0, sortindex = -1, massindex = 4, equal = False, outputbinstofile = False):
 
 	'''
 	Function: 
 	'''
+
+	print('>>>')
+	print('>>> Plotting histogram for {}'.format(textlabel))
 
 	if sortindex > 0:
 		arraytemp = array1[array1[:,sortindex] == 1]
@@ -6357,6 +6426,16 @@ def overplot_histogram(array1, complimits_val, linetype, labelshape, labelcolour
 
 	popt_truncatedpowerlaw, pcov_truncatedpowerlaw, popt_simplepowerlaw, pcov_simplepowerlaw, powerlawchisq, popt_schechter, pcov_schechter, schechterchisq = curve_fit3(bins_fit, n_fit_dM * np.power(10, norm_val), [1E2, 1E8], complimits_val, 1, 0, n_fit_dM_err * np.power(10, norm_val))
 
+	# Print Bins to File
+	if outputbinstofile == True:
+		f1 = open('./Logs/ZOutput_' + textlabel +  '_Bins.txt', 'w')
+		for i in range(0, len(bins_fit)):
+			# print('{}, {}, {}'.format(np.log10(bins_fit[i]), np.log10(n_fit_dM[i]), np.log10(n_fit_dM_err[i])))
+			outputstring = '{:.3e}, {:.3e}, {:.3e}\n'.format(bins_fit[i], n_fit_dM[i], n_fit_dM_err[i])
+			# print(outputstring)
+			f1.write(outputstring)
+		f1.close()
+
 	return bins_fit, n_fit_dM * np.power(10, norm_val), n_fit_dM_err * np.power(10, norm_val)
 
 def overplot_cumulative(gal_array_masslimit, complimits, color, linestyle, label, flag_fit):
@@ -6364,6 +6443,8 @@ def overplot_cumulative(gal_array_masslimit, complimits, color, linestyle, label
 	'''
 	Function: 
 	'''
+	print('>>>')	
+	print('>>> Plotting cumulative function for {}'.format(label))	
 
 	# Sort data array, create x and y arrays
 	gal_array_masslimit_in = gal_array_masslimit[:,4]
@@ -6414,6 +6495,9 @@ def plotaxes_cumulative(gal_array_masslimit, complimits, color, linestyle, label
 	Function: 
 	'''
 
+	print('>>>')	
+	print('>>> Plotting cumulative function for {}'.format(label))	
+	
 	# Sort data array, create x and y arrays
 	gal_array_masslimit_in = gal_array_masslimit[:,4]
 	sorted_data = np.sort(gal_array_masslimit_in)
@@ -6566,3 +6650,282 @@ def returnarraywhereabovelimit(gal_array, array_len, ageflag, complimits):
 	print('Finished outputing - length: {}'.format(len(output)))
 
 	return output
+
+def rungalaxyP_output(galname, np_SCP_B_array, np_SCP_C_array, SCP_B_complimits, SCP_C_complimits):
+
+	
+	'''
+	Function: Create PHANGS specific plots
+	'''
+
+	### --==--==--==-- ###
+	print('>>>')
+	print('>>> {}_SCP_AgeBins_00_AgeMass'.format(galname))
+	print('>>>')
+	fig, axes = plt.subplots(1, 2, sharex = 'all', sharey = 'all', figsize = (24, 12))
+	fig.subplots_adjust(hspace = 0, wspace = 0, bottom = 0.15)
+	plotaxes_agemass(np_SCP_B_array, '{} (Bayes)'.format(galname), SCP_B_complimits, axes[0], 1)
+	plotaxes_agemass(np_SCP_C_array, r'($\chi^2$)', SCP_C_complimits, axes[1], 1)
+	fig.text(0.5, 0.05, r'log (Age/yr)', ha = 'center', fontsize = 45)
+	fig.text(0.05, 0.5, r'log (M/M$_\odot$)', va = 'center', rotation = 'vertical', fontsize = 45)
+	plt.xscale('log', nonposx = 'clip')
+	plt.yscale('log', nonposy = 'clip')
+	axes[0].xaxis.set_major_formatter(log10_labels_format)
+	axes[0].yaxis.set_major_formatter(log10_labels_format)
+	axes[0].minorticks_off()
+	plt.axis([1E5, 1E9] + [1E2, 1E8])
+	plt.xticks([1E6, 1E7, 1E8])
+	plt.yticks([1E3, 1E5, 1E7])
+	plt.savefig('./FiguresSC/{}_SCP_AgeBins_00_AgeMass.png'.format(galname))
+	plt.close()
+
+	### --==--==--==-- ###
+	print('>>>')
+	print('>>> {}_SCP_AgeBins_01_Like'.format(galname))
+	print('>>>')
+	fig, axes = plt.subplots(2, 3, sharex = 'all', sharey = 'all', figsize = (36, 24))
+	fig.subplots_adjust(hspace = 0, wspace = 0, bottom = 0.15)
+	plotaxes_likelihood(np_SCP_B_array, 'Bayesian (< 10 Myr)', SCP_B_complimits, axes[0, 0], 1, 0, 0, 1, 'Test')
+	plotaxes_likelihood(np_SCP_B_array, '(10 - 100 Myr)', SCP_B_complimits, axes[0, 1], 2, 0, 0, 1, 'Test')
+	plotaxes_likelihood(np_SCP_B_array, '(100 - 400 Myr)', SCP_B_complimits, axes[0, 2], 3, [3.5, 2.75], 0, 1, 'Test')
+	plotaxes_likelihood(np_SCP_C_array, r'$\chi^2$ (< 10 Myr)', SCP_C_complimits, axes[1, 0], 1, 0, 0, 1, 'Test')
+	plotaxes_likelihood(np_SCP_C_array, '(10 - 100 Myr)', SCP_C_complimits, axes[1, 1], 2, [5.5, 1.0], 0, 1, 'Test')
+	plotaxes_likelihood(np_SCP_C_array, '(100 - 400 Myr)', SCP_C_complimits, axes[1, 2], 3, [3.5, 2.75], 0, 1, 'Test')
+	fig.text(0.5, 0.05, r'log (M$_*$/M$_\odot$)', ha = 'center', fontsize = 45)
+	fig.text(0.05, 0.5, r'$-\beta$', va = 'center', rotation = 'vertical', fontsize = 45)
+	plt.axis([3.0, 7.5] + [0, 3])
+	plt.xticks([4.0, 5.0, 6.0, 7.0])
+	plt.yticks([0.0, 1.0, 2.0])
+	plt.savefig('./FiguresSC/{}_SCP_AgeBins_01_Like.png'.format(galname))
+	plt.close()
+
+	### --==--==--==-- ###
+	print('>>>')
+	print('>>> {}_SCP_AgeBins_02_MSF'.format(galname))
+	print('>>>')
+	fig, axes = plt.subplots(2, 3, sharex = 'all', sharey = 'all', figsize = (36, 24))
+	fig.subplots_adjust(hspace = 0, wspace = 0, bottom = 0.15)
+	plotaxes_mspecfit(np_SCP_B_array, 'Bayesian (< 10 Myr)', SCP_B_complimits, axes[0, 0], 1, 0, 0)
+	plotaxes_mspecfit(np_SCP_B_array, '(10 - 100 Myr)', SCP_B_complimits, axes[0, 1], 2, 0, 0)
+	plotaxes_mspecfit(np_SCP_B_array, '(100 - 400 Myr)', SCP_B_complimits, axes[0, 2], 3, 0, 0)
+	plotaxes_mspecfit(np_SCP_C_array, r'$\chi^2$ (< 10 Myr)', SCP_C_complimits, axes[1, 0], 1, 0, 0)
+	plotaxes_mspecfit(np_SCP_C_array, '(10 - 100 Myr)', SCP_C_complimits, axes[1, 1], 2, 0, 0)
+	plotaxes_mspecfit(np_SCP_C_array, '(100 - 400 Myr)', SCP_C_complimits, axes[1, 2], 3, 0, 0)
+	fig.text(0.5, 0.05, r'log (M/M$_\odot$)', ha = 'center', fontsize = 45)
+	fig.text(0.05, 0.5, r'log N (> M)', va = 'center', rotation = 'vertical', fontsize = 45)
+	plt.xscale('log', nonposx = 'clip')
+	plt.yscale('log', nonposy = 'clip')
+	axes[0, 0].xaxis.set_major_formatter(log10_labels_format)
+	axes[0, 0].yaxis.set_major_formatter(log10_labels_format)
+	axes[0, 0].minorticks_off()
+	plt.axis([np.power(10, 3), np.power(10, 7.5)] + [np.power(10, -0.5), np.power(10, 3.5)])
+	plt.xticks([1E4, 1E5, 1E6, 1E7])
+	plt.yticks([1E0, 1E1, 1E2, 1E3])
+	plt.savefig('./FiguresSC/{}_SCP_AgeBins_02_MSF.png'.format(galname))
+	plt.close()
+
+	### --==--==--==-- ###
+	print('>>>')
+	print('>>> {}_SCP_AgeBins_03_Hist'.format(galname))
+	print('>>>')
+	fig, axes = plt.subplots(2, 3, sharex = 'all', sharey = 'all', figsize = (36, 24))
+	fig.subplots_adjust(hspace = 0, wspace = 0, bottom = 0.15)
+	plotaxes_histogram(np_SCP_B_array, 'Bayesian (< 10 Myr)', SCP_B_complimits, axes[0, 0], 1, 2)
+	plotaxes_histogram(np_SCP_B_array, '(10 - 100 Myr)', SCP_B_complimits, axes[0, 1], 2, 2)
+	plotaxes_histogram(np_SCP_B_array, '(100 - 400 Myr)', SCP_B_complimits, axes[0, 2], 3, 2)
+	plotaxes_histogram(np_SCP_C_array, r'$\chi^2$ (< 10 Myr)', SCP_C_complimits, axes[1, 0], 1, 2)
+	plotaxes_histogram(np_SCP_C_array, '(10 - 100 Myr)', SCP_C_complimits, axes[1, 1], 2, 2)
+	plotaxes_histogram(np_SCP_C_array, '(100 - 400 Myr)', SCP_C_complimits, axes[1, 2], 3, 2)
+	fig.text(0.5, 0.05, r'log (M/M$_\odot$)', ha = 'center', fontsize = 45)
+	fig.text(0.05, 0.5, r'log (dN/dM)', va = 'center', rotation = 'vertical', fontsize = 45)
+	plt.xscale('log', nonposx = 'clip')
+	plt.yscale('log', nonposy = 'clip')
+	axes[0, 0].xaxis.set_major_formatter(log10_labels_format)
+	axes[0, 0].yaxis.set_major_formatter(log10_labels_format)
+	axes[0, 0].minorticks_off()
+	plt.axis([np.power(10, 3), np.power(10, 7.5)] + [1E-7, 1E-1])
+	plt.xticks([1E4, 1E5, 1E6, 1E7])
+	plt.yticks([1E-6, 1E-4, 1E-2])
+	plt.savefig('./FiguresSC/{}_SCP_AgeBins_03_Hist.png'.format(galname))
+	plt.close()
+
+	### --==--==--==-- ###
+	print('>>>')
+	print('>>> {}_SCP_AgeBins_04_EqualHist'.format(galname))
+	print('>>>')
+	fig, axes = plt.subplots(2, 3, sharex = 'all', sharey = 'all', figsize = (36, 24))
+	fig.subplots_adjust(hspace = 0, wspace = 0, bottom = 0.15)
+	plotaxes_equalhistogram(np_SCP_B_array, 'Bayesian (< 10 Myr)', SCP_B_complimits, axes[0, 0], 1, 2)
+	plotaxes_equalhistogram(np_SCP_B_array, '(10 - 100 Myr)', SCP_B_complimits, axes[0, 1], 2, 2)
+	plotaxes_equalhistogram(np_SCP_B_array, '(100 - 400 Myr)', SCP_B_complimits, axes[0, 2], 3, 2)
+	plotaxes_equalhistogram(np_SCP_C_array, r'$\chi^2$ (< 10 Myr)', SCP_C_complimits, axes[1, 0], 1, 2)
+	plotaxes_equalhistogram(np_SCP_C_array, '(10 - 100 Myr)', SCP_C_complimits, axes[1, 1], 2, 2)
+	plotaxes_equalhistogram(np_SCP_C_array, '(100 - 400 Myr)', SCP_C_complimits, axes[1, 2], 3, 2)
+	fig.text(0.5, 0.05, r'log (M/M$_\odot$)', ha = 'center', fontsize = 45)
+	fig.text(0.05, 0.5, r'log (dN/dM)', va = 'center', rotation = 'vertical', fontsize = 45)
+	plt.xscale('log', nonposx = 'clip')
+	plt.yscale('log', nonposy = 'clip')
+	axes[0, 0].xaxis.set_major_formatter(log10_labels_format)
+	axes[0, 0].yaxis.set_major_formatter(log10_labels_format)
+	axes[0, 0].minorticks_off()
+	plt.axis([np.power(10, 3), np.power(10, 7.5)] + [1E-7, 1E-1])
+	plt.xticks([1E4, 1E5, 1E6, 1E7])
+	plt.yticks([1E-6, 1E-4, 1E-2])
+	plt.savefig('./FiguresSC/{}_SCP_AgeBins_04_EqualHist.png'.format(galname))
+	plt.close()
+
+	### --==--==--==-- ###
+	print('>>>')
+	print('>>> {}_SCP_AgeBins_05A_EqualHist'.format(galname))
+	print('>>>')
+	fig, axes = plt.subplots(1, 2, sharex = 'all', sharey = 'all', figsize = (24, 12))
+	fig.subplots_adjust(hspace = 0, wspace = 0, bottom = 0.15)
+	plotaxes_equalhistogram(np_SCP_B_array, 'Bayesian (< 200 Myr)', [SCP_B_complimits[1], SCP_B_complimits[1], SCP_B_complimits[1]], axes[0], 5, 2)
+	plotaxes_equalhistogram(np_SCP_C_array, r'$\chi^2$ (< 200 Myr)', [SCP_C_complimits[1], SCP_C_complimits[1], SCP_C_complimits[1]], axes[1], 5, 2)
+	fig.text(0.5, 0.05, r'log (M/M$_\odot$)', ha = 'center', fontsize = 45)
+	fig.text(0.05, 0.5, r'log (dN/dM)', va = 'center', rotation = 'vertical', fontsize = 45)
+	plt.xscale('log', nonposx = 'clip')
+	plt.yscale('log', nonposy = 'clip')
+	axes[0].xaxis.set_major_formatter(log10_labels_format)
+	axes[0].yaxis.set_major_formatter(log10_labels_format)
+	axes[0].minorticks_off()
+	plt.axis([np.power(10, 3), np.power(10, 7.5)] + [1E-7, 1E-1])
+	plt.xticks([1E4, 1E5, 1E6, 1E7])
+	plt.yticks([1E-6, 1E-4, 1E-2])
+	plt.savefig('./FiguresSC/{}_SCP_AgeBins_05A_EqualHist.png'.format(galname))
+	plt.close()
+
+	### --==--==--==-- ###
+	print('>>>')
+	print('>>> {}_SCP_AgeBins_05B_MSF'.format(galname))
+	print('>>>')
+	fig, axes = plt.subplots(1, 2, sharex = 'all', sharey = 'all', figsize = (24, 12))
+	fig.subplots_adjust(hspace = 0, wspace = 0, bottom = 0.15)
+	plotaxes_mspecfit(np_SCP_B_array, 'Bayesian (< 200 Myr)', [SCP_B_complimits[1], SCP_B_complimits[1], SCP_B_complimits[1]], axes[0], 5, 0, 0)
+	plotaxes_mspecfit(np_SCP_C_array, r'$\chi^2$ (< 200 Myr)', [SCP_C_complimits[1], SCP_C_complimits[1], SCP_C_complimits[1]], axes[1], 5, 0, 0)
+	fig.text(0.5, 0.05, r'log (M/M$_\odot$)', ha = 'center', fontsize = 45)
+	fig.text(0.05, 0.5, r'log N (> M)', va = 'center', rotation = 'vertical', fontsize = 45)
+	plt.xscale('log', nonposx = 'clip')
+	plt.yscale('log', nonposy = 'clip')
+	axes[0].xaxis.set_major_formatter(log10_labels_format)
+	axes[0].yaxis.set_major_formatter(log10_labels_format)
+	axes[0].minorticks_off()
+	plt.axis([np.power(10, 3), np.power(10, 7.5)] + [np.power(10, -0.5), np.power(10, 3.5)])
+	plt.xticks([1E4, 1E5, 1E6, 1E7])
+	plt.yticks([1E0, 1E1, 1E2, 1E3])
+	plt.savefig('./FiguresSC/{}_SCP_AgeBins_05B_MSF.png'.format(galname))
+	plt.close()
+
+	return 0
+
+def rungalaxyP_v1_1_output(galname, np_SCP_C_array, SCP_C_complimits):
+
+	
+	'''
+	Function: Create PHANGS specific plots (V1.1)
+	'''
+
+	### --==--==--==-- ###
+	print('>>>')
+	print('>>> {}_SCP_AgeBins_00_AgeMass'.format(galname))
+	print('>>>')
+	fig, axes = plt.subplots(1, 1, sharex = 'all', sharey = 'all', figsize = (12, 12))
+	fig.subplots_adjust(hspace = 0, wspace = 0, bottom = 0.15)
+	plotaxes_agemass(np_SCP_C_array, '{}'.format(galname), SCP_C_complimits, axes, 1)
+	fig.text(0.5, 0.05, r'log (Age/yr)', ha = 'center', fontsize = 45)
+	fig.text(0.05, 0.5, r'log (M/M$_\odot$)', va = 'center', rotation = 'vertical', fontsize = 45)
+	plt.xscale('log', nonposx = 'clip')
+	plt.yscale('log', nonposy = 'clip')
+	axes.xaxis.set_major_formatter(log10_labels_format)
+	axes.yaxis.set_major_formatter(log10_labels_format)
+	axes.minorticks_off()
+	plt.axis([1E5, 1E9] + [1E2, 1E8])
+	plt.xticks([1E6, 1E7, 1E8])
+	plt.yticks([1E3, 1E5, 1E7])
+	plt.savefig('./FiguresSC/{}_SCP_AgeBins_00_AgeMass.png'.format(galname))
+	plt.close()
+
+	### --==--==--==-- ###
+	print('>>>')
+	print('>>> {}_SCP_AgeBins_01_Like'.format(galname))
+	print('>>>')
+	fig, axes = plt.subplots(1, 3, sharex = 'all', sharey = 'all', figsize = (36, 12))
+	fig.subplots_adjust(hspace = 0, wspace = 0, bottom = 0.15)
+	plotaxes_likelihood(np_SCP_C_array, '{} (< 10 Myr)'.format(galname), SCP_C_complimits, axes[0], 1, 0, 0, 1, 'Test')
+	plotaxes_likelihood(np_SCP_C_array, '(10 - 100 Myr)', SCP_C_complimits, axes[1], 2, 0, 0, 1, 'Test')
+	plotaxes_likelihood(np_SCP_C_array, '(100 - 400 Myr)', SCP_C_complimits, axes[2], 3, [3.5, 2.75], 0, 1, 'Test')
+	fig.text(0.5, 0.05, r'log (M$_*$/M$_\odot$)', ha = 'center', fontsize = 45)
+	fig.text(0.05, 0.5, r'$-\beta$', va = 'center', rotation = 'vertical', fontsize = 45)
+	plt.axis([3.0, 7.5] + [0, 3])
+	plt.xticks([4.0, 5.0, 6.0, 7.0])
+	plt.yticks([0.0, 1.0, 2.0])
+	plt.savefig('./FiguresSC/{}_SCP_AgeBins_01_Like.png'.format(galname))
+	plt.close()
+
+	### --==--==--==-- ###
+	print('>>>')
+	print('>>> {}_SCP_AgeBins_02_MSF'.format(galname))
+	print('>>>')
+	fig, axes = plt.subplots(1, 3, sharex = 'all', sharey = 'all', figsize = (36, 12))
+	fig.subplots_adjust(hspace = 0, wspace = 0, bottom = 0.15)
+	plotaxes_mspecfit(np_SCP_C_array, '{} (< 10 Myr)'.format(galname), SCP_C_complimits, axes[0], 1, 0, 0)
+	plotaxes_mspecfit(np_SCP_C_array, '(10 - 100 Myr)', SCP_C_complimits, axes[1], 2, 0, 0)
+	plotaxes_mspecfit(np_SCP_C_array, '(100 - 400 Myr)', SCP_C_complimits, axes[2], 3, 0, 0)
+	fig.text(0.5, 0.05, r'log (M/M$_\odot$)', ha = 'center', fontsize = 45)
+	fig.text(0.05, 0.5, r'log N (> M)', va = 'center', rotation = 'vertical', fontsize = 45)
+	plt.xscale('log', nonposx = 'clip')
+	plt.yscale('log', nonposy = 'clip')
+	axes[0].xaxis.set_major_formatter(log10_labels_format)
+	axes[0].yaxis.set_major_formatter(log10_labels_format)
+	axes[0].minorticks_off()
+	plt.axis([np.power(10, 3), np.power(10, 7.5)] + [np.power(10, -0.5), np.power(10, 3.5)])
+	plt.xticks([1E4, 1E5, 1E6, 1E7])
+	plt.yticks([1E0, 1E1, 1E2, 1E3])
+	plt.savefig('./FiguresSC/{}_SCP_AgeBins_02_MSF.png'.format(galname))
+	plt.close()
+
+	### --==--==--==-- ###
+	print('>>>')
+	print('>>> {}_SCP_AgeBins_03_Hist'.format(galname))
+	print('>>>')
+	fig, axes = plt.subplots(1, 3, sharex = 'all', sharey = 'all', figsize = (36, 12))
+	fig.subplots_adjust(hspace = 0, wspace = 0, bottom = 0.15)
+	plotaxes_histogram(np_SCP_C_array, '{} (< 10 Myr)'.format(galname), SCP_C_complimits, axes[0], 1, 2)
+	plotaxes_histogram(np_SCP_C_array, '(10 - 100 Myr)', SCP_C_complimits, axes[1], 2, 2)
+	plotaxes_histogram(np_SCP_C_array, '(100 - 400 Myr)', SCP_C_complimits, axes[2], 3, 2)
+	fig.text(0.5, 0.05, r'log (M/M$_\odot$)', ha = 'center', fontsize = 45)
+	fig.text(0.05, 0.5, r'log (dN/dM)', va = 'center', rotation = 'vertical', fontsize = 45)
+	plt.xscale('log', nonposx = 'clip')
+	plt.yscale('log', nonposy = 'clip')
+	axes[0].xaxis.set_major_formatter(log10_labels_format)
+	axes[0].yaxis.set_major_formatter(log10_labels_format)
+	axes[0].minorticks_off()
+	plt.axis([np.power(10, 3), np.power(10, 7.5)] + [1E-7, 1E-1])
+	plt.xticks([1E4, 1E5, 1E6, 1E7])
+	plt.yticks([1E-6, 1E-4, 1E-2])
+	plt.savefig('./FiguresSC/{}_SCP_AgeBins_03_Hist.png'.format(galname))
+	plt.close()
+
+	### --==--==--==-- ###
+	print('>>>')
+	print('>>> {}_SCP_AgeBins_04_EqualHist'.format(galname))
+	print('>>>')
+	fig, axes = plt.subplots(1, 3, sharex = 'all', sharey = 'all', figsize = (36, 12))
+	fig.subplots_adjust(hspace = 0, wspace = 0, bottom = 0.15)
+	plotaxes_equalhistogram(np_SCP_C_array, '{} (< 10 Myr)'.format(galname), SCP_C_complimits, axes[0], 1, 2)
+	plotaxes_equalhistogram(np_SCP_C_array, '(10 - 100 Myr)', SCP_C_complimits, axes[1], 2, 2)
+	plotaxes_equalhistogram(np_SCP_C_array, '(100 - 400 Myr)', SCP_C_complimits, axes[2], 3, 2)
+	fig.text(0.5, 0.05, r'log (M/M$_\odot$)', ha = 'center', fontsize = 45)
+	fig.text(0.05, 0.5, r'log (dN/dM)', va = 'center', rotation = 'vertical', fontsize = 45)
+	plt.xscale('log', nonposx = 'clip')
+	plt.yscale('log', nonposy = 'clip')
+	axes[0].xaxis.set_major_formatter(log10_labels_format)
+	axes[0].yaxis.set_major_formatter(log10_labels_format)
+	axes[0].minorticks_off()
+	plt.axis([np.power(10, 3), np.power(10, 7.5)] + [1E-7, 1E-1])
+	plt.xticks([1E4, 1E5, 1E6, 1E7])
+	plt.yticks([1E-6, 1E-4, 1E-2])
+	plt.savefig('./FiguresSC/{}_SCP_AgeBins_04_EqualHist.png'.format(galname))
+	plt.close()
+
+	return 0

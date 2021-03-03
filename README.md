@@ -55,10 +55,12 @@ List of Functions:
 - plotclumps_histogram2(array1, complimits_val)
 - plotclumps_cdf(array1, array2, complimits_val)
 - plotclumps_mr_clouds(axes, np_Full_array, np_array, np_NL_array, radiuslimit, plotcolour, plotsymbol, plotsym, legendname, masslimit = 0)
+- plotclumps_mr_leaves(axes, np_Full_array, np_array, radiuslimit, plotcolour, plotsymbol, plotsym, legendname, masslimit = 0, radiuscut = 1):
 - curvefit_powerlaw_clumps(array1, array2, plotaxes, flag_mr = 1, legendname = '')
 
 # (7) Code Snippets (Extreme)
 - extremegalarrays(galarray, galname)
+- phangsgalarrays(galarray, galname)
 - sumupvmag(galarray, galname, galindex, galdistmod)
 - makemassagebox(x1, y1, x2, y2)
 
@@ -73,6 +75,7 @@ List of Functions:
 
 # (9) Code Snippets (Other)
 - sextodecimal(ra, dec)
+- decimaltosex(ra, dec)
 - returnposinfo(galname)
 - makearrayhist(array1, array2, mass_lim, massindex = 4)
 - makearrayhistequal(array1, mass_lim, flag, numgal_bin_in = 5, massindex = 4)
@@ -92,11 +95,11 @@ List of Functions:
 - rungmcmostmass(gal_array, plot_marker, plot_label)
 - agecuts_outputarrays(gal_array, galname, complimits, ageflag)
 - plotgal_likelihood(gal_array, galname, complimits, plotrow, axes, flag)
-- plotaxes_likelihood(gal_array, galname, complimits, plotaxes, ageflag, loc, sigma, output, outputfile, cutoff_mass_mult = 100)
-- likelihoodplot(array, galname, agename, plotaxes, loc, sigma, output_flag, outputfile, cutoff_mass_mult = 100)
+- plotaxes_likelihood(gal_array, galname, complimits, plotaxes, ageflag, loc, sigma, output, outputfile, cutoff_mass_mult = 100, flag_simple = 0)
+- likelihoodplot(array, galname, agename, plotaxes, loc, sigma, output_flag, outputfile, cutoff_mass_mult = 100, flag_simple = 0)
 - plotaxes_agemass(gal_array, galname, complimits, plotaxes, flag)
 - plotaxes_histogram(gal_array, galname, complimits, plotaxes, ageflag, outflag)
-- plotaxes_equalhistogram(gal_array, galname, complimits, plotaxes, ageflag, outflag, numgal_bin_in = 5)
+- plotaxes_equalhistogram(gal_array, galname, complimits, plotaxes, ageflag, outflag, numgal_bin_in = 5, outputbinstofile = False)
 - histogramplot(galname, age_label, bins, n_dM, bins_fit, n_fit_dM, n_fit_dM_err, complimits, array_plot, plotaxes, len_sortedarray, outflag)
 - plotaxes_mspecfit(gal_array, galname, complimits, plotaxes, ageflag, errorflag, sigma, plotflag = 1, flagcol = 1)
 - mspecfitplot(array1, array1_masslimit, complimits_val, plotaxes, galname, agename, errorflag, plotflag = 1, flagcol = 1)
@@ -122,3 +125,5 @@ List of Functions:
 - calculatemaxmass(mmaxlist)
 - calculatetotalmassA5(gal_array, complimits)
 - returnarraywhereabovelimit(gal_array, array_len, ageflag, complimits)
+- rungalaxyP_output(galname, np_SCP_B_array, np_SCP_C_array, SCP_B_complimits, SCP_C_complimits)
+- rungalaxyP_v1_1_output(galname, np_SCP_C_array, SCP_C_complimits)
