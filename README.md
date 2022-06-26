@@ -21,7 +21,7 @@ List of Functions:
 # (2) Printing Function
 - printarraynumbering(array)
 
-# (3) Declare Simple Functions
+# (3) Simple Functions
 - rsquared(x, y)
 - reducedchisq(ydata, ymod, dof, sd)
 - log10_labels(x, pos)
@@ -29,11 +29,11 @@ List of Functions:
 - find_nearest2guided(array, value, org_idx)
 
 # (4) Code Snippets (General)
-- converttonumpy(array, arrayname, output = True):
-- outputselectedcatalog(gal_array, outname, complimits)
+- converttonumpy(array, arrayname, output = True)
+- outputselectedcatalog(gal_array, outname, complimits, outputcatstofile = False)
 - ageflagconvert(agename)
 
-# (5) Code Snippets (Outputmassfunction)
+# (5) Code Snippets (outputmassfunction)
 - original(Beta, M0, M)
 - integrateconvolve(sigma, Beta, M0, M)
 - convolvemag(sigma, Beta, M0, M)
@@ -60,6 +60,7 @@ List of Functions:
 
 # (7) Code Snippets (Extreme)
 - extremegalarrays(galarray, galname)
+- extremegalarrays_alt(galarray, galname)
 - phangsgalarrays(galarray, galname)
 - sumupvmag(galarray, galname, galindex, galdistmod)
 - makemassagebox(x1, y1, x2, y2)
@@ -85,12 +86,12 @@ List of Functions:
 - makecdffunnoplot(array1, complimits_val)
 - galnameoutfun(galname)
 
-# (10) Code Snippets (masterAnalysisFunctions)
+# (10) Code Snippets (Old - masteranalysisfunction)
 - masteranalysisfunction(galname, gal_array, range_mass, typeflag, complimits, flag_idl, flag_likelihood)
-- masteranalysisfunctionSCSC(galname, gal_array_1, gal_array_2, range_mass, complimits_1, complimits_2):
+- masteranalysisfunctionSCSC(galname, gal_array_1, gal_array_2, range_mass, complimits_1, complimits_2)
 - masteranalysisfunctionSCGMC(galname, gal_array, gal_array_gmc, range_mass, complimits, complimits_gmc)
 
-# (11) Code Snippets (Analysis_Plots)
+# (11) Code Snippets (Analysis I - Base Functions)
 - runscmostmass(gal_array, plot_marker, plot_label)
 - rungmcmostmass(gal_array, plot_marker, plot_label)
 - agecuts_outputarrays(gal_array, galname, complimits, ageflag)
@@ -116,7 +117,7 @@ List of Functions:
 - calculateslopeandcorragebin_semilog(x, y)
 - returnmaxvalue(gal_array, complimits, galname)
 - plotaxes_xb_histogram(gal_array_masslimit, complimits, marker, color, label, flag_fit, plotaxes)
-- overplot_histogram(array1, complimits_val, linetype, labelshape, labelcolour, textlabel, norm_val = 0, sortindex = -1, massindex = 4, equal = False)
+- overplot_histogram(array1, complimits_val, linetype, labelshape, labelcolour, textlabel, norm_val = 0, sortindex = -1, massindex = 4, equal = False, alphaval = 0.4)
 - overplot_cumulative(gal_array_masslimit, complimits, color, linestyle, label, flag_fit)
 - plotaxes_cumulative(gal_array_masslimit, complimits, color, linestyle, label, flag_fit, plotaxes)
 - calculateslopeandcorragebin_plotaxes(x, y, plotaxes)
@@ -127,3 +128,5 @@ List of Functions:
 - returnarraywhereabovelimit(gal_array, array_len, ageflag, complimits)
 - rungalaxyP_output(galname, np_SCP_B_array, np_SCP_C_array, SCP_B_complimits, SCP_C_complimits)
 - rungalaxyP_v1_1_output(galname, np_SCP_C_array, SCP_C_complimits)
+
+# (12) Code Snippets (Analysis II - Make Plots)

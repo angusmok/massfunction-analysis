@@ -6,7 +6,7 @@
 ###
 #------------------------------------------------------------------------------
 
-# Declarations + Constants - v.20190603 (20190409)
+# Declarations + Constants - v.2022_1
 
 #######################################################
 # Declares Libraries
@@ -233,8 +233,6 @@ if not os.path.exists('./ClusterTemp/'):
 	if not os.path.exists('./Output/'):
 		os.makedirs('./Output')
 	
-print('Import - AnalysisFunctions - v2020.08')
-
 #------------------------------------------------------------------------------
 ###
 # (1) Math Functions
@@ -390,7 +388,7 @@ def printarraynumbering(array):
 
 #------------------------------------------------------------------------------
 ###
-# (3) Declare Simple Functions
+# (3) Simple Functions
 ###
 
 def rsquared(x, y):
@@ -511,7 +509,7 @@ def find_nearest2guided(array, value, org_idx):
 
 #------------------------------------------------------------------------------
 ###
-# (4) Declare Code Snippets (General)
+# (4) Code Snippets (General)
 ###
 
 def converttonumpy(array, arrayname, output = True):
@@ -533,13 +531,12 @@ def converttonumpy(array, arrayname, output = True):
 
 	return np_array
 
-def outputselectedcatalog(gal_array, outname, complimits):
+def outputselectedcatalog(gal_array, outname, complimits, outputcatstofile = False):
 
 	'''
 	Function: Output selected clusters
 	'''
 
-	flag_output = 1
 	# Create classic 3 age bins
 	gal_array_age1 = gal_array[gal_array[:,6] <= 10.01*1E6]
 	gal_array_age1_masslimit = gal_array_age1[gal_array_age1[:,4] > complimits[0]]
@@ -550,11 +547,11 @@ def outputselectedcatalog(gal_array, outname, complimits):
 	gal_array_age3 = gal_array_age3_tmp[gal_array_age3_tmp[:,6] <= 400.01*1E6]
 	gal_array_age3_masslimit = gal_array_age3[gal_array_age3[:,4] > complimits[2]]
 	print('- Out: {}'.format(outname))
-	print('Length of Input Array: {}'.format(len(gal_array)))
-	print('Input Completeness Limits: {:.1e}, {:.1e}, {:.1e}'.format(complimits[0], complimits[1], complimits[2]))
-	print('Length of Output File (with cuts) {}:'.format(len(gal_array_age1_masslimit) + len(gal_array_age2_masslimit) + len(gal_array_age3_masslimit)))
+	# print('Length of Input Array: {}'.format(len(gal_array)))
+	print('Input Completeness Limits: {:.1f}, {:.1f}, {:.1f}'.format(np.log10(complimits[0]), np.log10(complimits[1]), np.log10(complimits[2])))
+	print('Number in Bin Above Completeness Limits: {}, {}, {}'.format(len(gal_array_age1_masslimit), len(gal_array_age2_masslimit), len(gal_array_age3_masslimit)))
 
-	if flag_output == 1:
+	if outputcatstofile == True:
 		f1 = open('./Logs/ZZOutput_' + outname +  '_Cut.txt', 'w')
 		f2 = open('./Logs/ZZOutput_' + outname +  '_Full.txt', 'w')
 		for i in range(0, len(gal_array)):
@@ -610,7 +607,7 @@ def ageflagconvert(agename):
 
 #------------------------------------------------------------------------------
 ###
-# (5) Code Snippets (Outputmassfunction)
+# (5) Code Snippets (outputmassfunction)
 ###
 
 def original(Beta, M0, M):
@@ -1169,7 +1166,30 @@ def curvefit_powerlaw_clumps(array1, array2, plotaxes, flag_mr = 1, legendname =
 def extremegalarrays(galarray, galname):
 
 	'''
-	Function: Print maximum mass object by age range
+	Function: Print maximum mass object by normal age range (with additional at 410 Myr)
+	'''
+
+	galarray1 = galarray[galarray[:,6] <= 1E7]
+	galarray2_temp = galarray[galarray[:,6] > 1E7]
+	galarray2 = galarray2_temp[galarray2_temp[:,6] <= 1E8]
+	galarray3_temp = galarray[galarray[:,6] > 1E8]
+	galarray3 = galarray3_temp[galarray3_temp[:,6] <= 4 * 1E8]
+	galarray4_temp = galarray[galarray[:,6] > 1E8]
+	galarray4 = galarray4_temp[galarray4_temp[:,6] <= 4.1 * 1E8]
+
+	string1 = galname + ' (< 10 Myr)'
+	string2 = galname + ' (10 - 100 Myr)'
+	string3 = galname + ' (100 - 400 Myr)'
+	string4 = galname + ' (100 - 401 Myr)'
+
+	print('In {}, {} in {}, {} in {}, {} in {}, and {} in {}'.format(galname, len(galarray1), string1, len(galarray2), string2, len(galarray3), string3, len(galarray4), string4))
+
+	return galarray1, galarray2, galarray3, galarray4, string1, string2, string3, string4
+
+def extremegalarrays_alt(galarray, galname):
+
+	'''
+	Function: Print maximum mass object by age range (with additional at 410 Myr)
 	'''
 
 	galarray1_temp = galarray[galarray[:,6] > 1E8]
@@ -1178,14 +1198,17 @@ def extremegalarrays(galarray, galname):
 	galarray2 = galarray2_temp[galarray2_temp[:,6] <= np.power(10, 8.7)]
 	galarray3_temp = galarray[galarray[:,6] > 1E8]
 	galarray3 = galarray3_temp[galarray3_temp[:,6] <= 4 * 1E8]
+	galarray4_temp = galarray[galarray[:,6] > 1E8]
+	galarray4 = galarray4_temp[galarray4_temp[:,6] <= 4.1 * 1E8]
 
 	string1 = galname + ' (0.1 - 1 Gyr)'
 	string2 = galname + ' (0.18 - 0.50 Gyr)'
 	string3 = galname + ' (0.1 - 0.4 Gyr)'
+	string4 = galname + ' (0.1 - 0.41 Gyr)'
 
-	print('In {}, {} in {}, {} in {}, and {} in {}'.format(galname, len(galarray1), string1, len(galarray2), string2, len(galarray3), string3))
+	print('In {}, {} in {}, {} in {}, {} in {}, and {} in {}'.format(galname, len(galarray1), string1, len(galarray2), string2, len(galarray3), string3, len(galarray4), string4))
 
-	return galarray1, galarray2, galarray3, string1, string2, string3
+	return galarray1, galarray2, galarray3, galarray4, string1, string2, string3, string4
 
 def phangsgalarrays(galarray, galname):
 
@@ -1422,7 +1445,7 @@ def curve_fit3(array1, array2, array3, mass_lim, flag, flag_plot, array2_err):
 	1 = output
 	2 = output, cumuluative function
 	>>> Flag Plot
-	2 - yes, no legend, only linear
+	2 = yes, no legend, only linear
 	1 = yes
 	0 = no
 	-1 = no, and output alternative legend
@@ -1497,7 +1520,6 @@ def curve_fit3(array1, array2, array3, mass_lim, flag, flag_plot, array2_err):
 					popt_truncatedpowerlaw_1, pcov_truncatedpowerlaw_1 = optimize.curve_fit(truncatedpowerlaw_log, np.log10(array1_tofit), np.log10(array2_tofit), maxfev = 2500000, absolute_sigma = True, sigma = 0.434 * (array2_tofit_err / array2_tofit))
 
 	# Perform KS Test on the resulting functions
-	print ('Done Fitting Routines')
 	from pynverse import inversefunc
 	powerlawchisq = 0
 	schechterchisq = 0
@@ -1529,14 +1551,14 @@ def curve_fit3(array1, array2, array3, mass_lim, flag, flag_plot, array2_err):
 		schechter_out = schechter(array1_tofit, *popt_schechter)
 		powerlawchisq = reducedchisq(simplepowerlaw_out, array2_tofit, 2, sd = array2_tofit_err)
 		schechterchisq = reducedchisq(schechter_out, array2_tofit, 3, sd = array2_tofit_err)
-		print('PL Reduced {:.2e}, Schechter Reduced {:.2e}'.format(powerlawchisq, schechterchisq))
+		print('PL Reduced Chi2 = {:.2e}, Schechter Reduced Chi2 = {:.2e}'.format(powerlawchisq, schechterchisq))
 
 	# Print fit parameters for simple power law
-	print('  --- Fit Parameters ---')
+	# print('  --- Fit Parameters ---')
 	print('Simple Power Law Fit')
-	print('A: {:.2e} +/- {:.2e}, B: {:.2f} +/- {:.2f}'.format(popt_simplepowerlaw[0], np.sqrt(abs(pcov_simplepowerlaw[0][0])), popt_simplepowerlaw[1], np.sqrt(abs(pcov_simplepowerlaw[1][1]))))
-	print('Covariance (00, 11): ({:.2e}, {:.2f})'.format(pcov_simplepowerlaw[0][0], pcov_simplepowerlaw[1][1]))
-	print('log A: {:.2f} +/- {:.2f}'.format(np.log10(popt_simplepowerlaw[0]), 0.434 * np.sqrt(abs(pcov_simplepowerlaw[0][0])) / popt_simplepowerlaw[0]))
+	print('  A: {:.2e} +/- {:.2e}, B: {:.2f} +/- {:.2f}'.format(popt_simplepowerlaw[0], np.sqrt(abs(pcov_simplepowerlaw[0][0])), popt_simplepowerlaw[1], np.sqrt(abs(pcov_simplepowerlaw[1][1]))))
+	print('  Covariance (00, 11): ({:.2e}, {:.2f})'.format(pcov_simplepowerlaw[0][0], pcov_simplepowerlaw[1][1]))
+	print('  log A: {:.2f} +/- {:.2f}'.format(np.log10(popt_simplepowerlaw[0]), 0.434 * np.sqrt(abs(pcov_simplepowerlaw[0][0])) / popt_simplepowerlaw[0]))
 
 	# Plot results for simple power law
 	if flag_plot > 0:
@@ -1552,9 +1574,9 @@ def curve_fit3(array1, array2, array3, mass_lim, flag, flag_plot, array2_err):
 	if abs(flag) == 1:
 
 		print('Schechter Function Fit')
-		print('A: {:.2e} +/- {:.2e}, B: {:.2e} +/- {:.2e}, C: {:.2f} +/- {:.2f}'.format(popt_schechter[0], np.sqrt(abs(pcov_schechter[0][0])), popt_schechter[1], np.sqrt(abs(pcov_schechter[1][1])), popt_schechter[2], np.sqrt(abs(pcov_schechter[2][2]))))
-		print('Covariance (00, 11, 22): ({:.2e}, {:.2e}, {:.2e})'.format(pcov_schechter[0][0], pcov_schechter[1][1], pcov_schechter[2][2]))
-		print('log A: {:.2f} +/- {:.2f}, log B: {:.2f} +/- {:.2f}'.format(np.log10(popt_schechter[0]), 0.434 * np.sqrt(abs(pcov_schechter[0][0])) / popt_schechter[0], np.log10(popt_schechter[1]), 0.434 * np.sqrt(abs(pcov_schechter[1][1])) / popt_schechter[1]))
+		print('  A: {:.2e} +/- {:.2e}, B: {:.2e} +/- {:.2e}, C: {:.2f} +/- {:.2f}'.format(popt_schechter[0], np.sqrt(abs(pcov_schechter[0][0])), popt_schechter[1], np.sqrt(abs(pcov_schechter[1][1])), popt_schechter[2], np.sqrt(abs(pcov_schechter[2][2]))))
+		print('  Covariance (00, 11, 22): ({:.2e}, {:.2e}, {:.2e})'.format(pcov_schechter[0][0], pcov_schechter[1][1], pcov_schechter[2][2]))
+		print('  log A: {:.2f} +/- {:.2f}, log B: {:.2f} +/- {:.2f}'.format(np.log10(popt_schechter[0]), 0.434 * np.sqrt(abs(pcov_schechter[0][0])) / popt_schechter[0], np.log10(popt_schechter[1]), 0.434 * np.sqrt(abs(pcov_schechter[1][1])) / popt_schechter[1]))
 	
 		# Plot results for Schechter function
 		if flag_plot > 0:
@@ -1712,7 +1734,7 @@ def curve_fit1slopev2(array1_1, array1_2, array2_1, array2_2, array3, mass_lim_1
 from astropy.coordinates import Angle
 from astropy import units as u
 
-def sextodecimal_new(ra, dec):
+def sextodecimal(ra, dec):
 
 	'''
 	Function: Convert RA and DEC from sexagesimal to decimal
@@ -2420,7 +2442,7 @@ def returnposinfo(galname):
 	R25 = np.power(10, LOGD25) / (10. * 60. * 2.)
 	LONGAXIS = R25
 	SHORTAXIS = R25 /  np.power(10, LOGR25)
-	print('>>> {} properties: {}, {}, {}, {}, {}'.format(galname, RA, DEC, PA, LONGAXIS, SHORTAXIS))
+	print('- {} returnposinfo: {}, {}, {}, {:.7f}, {:.7f}'.format(galname, RA, DEC, PA, LONGAXIS, SHORTAXIS))
 
 	return RA, DEC, PA, LONGAXIS, SHORTAXIS, REGPATH, POLYPATH
 
@@ -2902,7 +2924,7 @@ def galnameoutfun(galname):
 
 #------------------------------------------------------------------------------
 ###
-# (10) Code Snippets (masterAnalysisFunctions)
+# (10) Code Snippets (Old - masteranalysisfunction)
 ###
 
 def masteranalysisfunction(galname, gal_array, range_mass, typeflag, complimits, flag_idl, flag_likelihood):
@@ -4969,7 +4991,7 @@ def masteranalysisfunctionSCGMC(galname, gal_array, gal_array_gmc, range_mass, c
 
 #------------------------------------------------------------------------------
 ###
-# (11) Code Snippets (Analysis_Plots)
+# (11) Code Snippets (Analysis I - Base Functions)
 ###
 
 def runscmostmass(gal_array, plot_marker, plot_label):
@@ -5498,7 +5520,7 @@ def likelihoodplot(array, galname, agename, plotaxes, loc, sigma, output_flag, o
 		plt.xticks([4.0, 5.0, 6.0, 7.0])
 		plt.yticks([0.0, 1.0, 2.0, 3.0])
 		plt.colorbar()
-		plt.text(4.0, 2.75, 'N = {}'.format(len(array4)), fontsize = 36, verticalalignment = 'top', bbox = boxprops)
+		plt.text(4.0, 2.75, 'N = {}'.format(len(array4)), fontsize = 32, verticalalignment = 'top', bbox = boxprops)
 		plt.savefig('./GridLike/' + outputfile + '_1.png')
 		plt.close()
 
@@ -5512,7 +5534,7 @@ def likelihoodplot(array, galname, agename, plotaxes, loc, sigma, output_flag, o
 		plt.xticks([4.0, 5.0, 6.0, 7.0])
 		plt.yticks([0.0, 1.0, 2.0, 3.0])
 		plt.colorbar()
-		plt.text(4.0, 2.75, 'N = {}'.format(len(array4)), fontsize = 36, verticalalignment = 'top', bbox = boxprops)
+		plt.text(4.0, 2.75, 'N = {}'.format(len(array4)), fontsize = 32, verticalalignment = 'top', bbox = boxprops)
 		plt.savefig('./GridLike/' + outputfile + '_2.png')
 		plt.close()
 
@@ -5662,9 +5684,9 @@ def likelihoodplot(array, galname, agename, plotaxes, loc, sigma, output_flag, o
 
 	# Set legend labels
 	if agename in ['XB_comb'] or flag_simple == 1:
-		plotaxes.text(locval[0], locval[1], galnameout, fontsize = 36, verticalalignment = 'top', bbox = boxprops)
+		plotaxes.text(locval[0], locval[1], galnameout, fontsize = 32, verticalalignment = 'top', bbox = boxprops)
 	else:
-		plotaxes.text(locval[0], locval[1], galnameout + '\n     N = {}'.format(len(array4)), fontsize = 36, verticalalignment = 'top', bbox = boxprops)
+		plotaxes.text(locval[0], locval[1], galnameout + '\n     N = {}'.format(len(array4)), fontsize = 32, verticalalignment = 'top', bbox = boxprops)
 	
 	# Plot dotted lines
 	if flag_success == 1:
@@ -6400,14 +6422,13 @@ def plotaxes_xb_histogram(gal_array_masslimit, complimits, marker, color, label,
 
 	return 0
 
-def overplot_histogram(array1, complimits_val, linetype, labelshape, labelcolour, textlabel, norm_val = 0, sortindex = -1, massindex = 4, equal = False, outputbinstofile = False):
+def overplot_histogram(array1, complimits_val, linetype, labelshape, labelcolour, textlabel, norm_val = 0, sortindex = -1, massindex = 4, equal = False, outputbinstofile = False, alphaval = 0.4):
 
 	'''
 	Function: 
 	'''
 
-	print('>>>')
-	print('>>> Plotting histogram for {}'.format(textlabel))
+	print('--- Plotting histogram for {} ---'.format(textlabel))
 
 	if sortindex > 0:
 		arraytemp = array1[array1[:,sortindex] == 1]
@@ -6418,11 +6439,11 @@ def overplot_histogram(array1, complimits_val, linetype, labelshape, labelcolour
 
 	if equal == False:
 		n, bins, bins_width, bins_centre, n_fit, bins_fit, n_dM, n_fit_dM, n_dlogM, n_fit_dlogM, ncum, ncum_fit, n_fit_err, n_fit_dM_err, n_fit_dlogM_err = makearrayhist(array1, mass_bins_log, complimits_val, massindex = massindex)
-		plt.errorbar(bins_fit, n_fit_dM * np.power(10, norm_val), marker = labelshape, linestyle = 'None', color = labelcolour, markeredgecolor = labelcolour, markerfacecolor = labelcolour, yerr = n_fit_dM_err * np.power(10, norm_val), markersize = 20, label = textlabel, alpha = 0.6)
+		plt.errorbar(bins_fit, n_fit_dM * np.power(10, norm_val), marker = labelshape, linestyle = 'None', color = labelcolour, markeredgecolor = labelcolour, markerfacecolor = labelcolour, yerr = n_fit_dM_err * np.power(10, norm_val), markersize = 20, label = textlabel, alpha = alphaval)
 
 	else:
 		n, bins, bins_width, bins_centre, n_fit, bins_fit, n_dM, n_fit_dM, n_dlogM, n_fit_dlogM, ncum, ncum_fit, n_fit_err, n_fit_dM_err, n_fit_dlogM_err = makearrayhistequal(array1, complimits_val, -1, massindex = massindex, numgal_bin_in = 3)
-		plt.errorbar(bins_fit, n_fit_dM * np.power(10, norm_val), marker = labelshape, linestyle = 'None', color = labelcolour, markeredgecolor = labelcolour, markerfacecolor = labelcolour, yerr = n_fit_dM_err * np.power(10, norm_val), markersize = 20, label = textlabel, alpha = 0.6)
+		plt.errorbar(bins_fit, n_fit_dM * np.power(10, norm_val), marker = labelshape, linestyle = 'None', color = labelcolour, markeredgecolor = labelcolour, markerfacecolor = labelcolour, yerr = n_fit_dM_err * np.power(10, norm_val), markersize = 20, label = textlabel, alpha = alphaval)
 
 	popt_truncatedpowerlaw, pcov_truncatedpowerlaw, popt_simplepowerlaw, pcov_simplepowerlaw, powerlawchisq, popt_schechter, pcov_schechter, schechterchisq = curve_fit3(bins_fit, n_fit_dM * np.power(10, norm_val), [1E2, 1E8], complimits_val, 1, 0, n_fit_dM_err * np.power(10, norm_val))
 
@@ -6430,9 +6451,7 @@ def overplot_histogram(array1, complimits_val, linetype, labelshape, labelcolour
 	if outputbinstofile == True:
 		f1 = open('./Logs/ZOutput_' + textlabel +  '_Bins.txt', 'w')
 		for i in range(0, len(bins_fit)):
-			# print('{}, {}, {}'.format(np.log10(bins_fit[i]), np.log10(n_fit_dM[i]), np.log10(n_fit_dM_err[i])))
 			outputstring = '{:.3e}, {:.3e}, {:.3e}\n'.format(bins_fit[i], n_fit_dM[i], n_fit_dM_err[i])
-			# print(outputstring)
 			f1.write(outputstring)
 		f1.close()
 
@@ -6929,3 +6948,11 @@ def rungalaxyP_v1_1_output(galname, np_SCP_C_array, SCP_C_complimits):
 	plt.close()
 
 	return 0
+
+#------------------------------------------------------------------------------
+###
+# (12) Code Snippets (Analysis II - Make Plots)
+###
+
+
+
