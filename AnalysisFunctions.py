@@ -6,7 +6,7 @@
 ###
 #------------------------------------------------------------------------------
 
-# Declarations + Constants - v.2022_1
+# Declarations + Constants - v.2022_v2
 
 #######################################################
 # Declares Libraries
@@ -77,21 +77,48 @@ plotstretchfactor = 1.00
 masslimtestfactor = 3
 num_interp = 50
 ### Star Formation Rates ###
-Ant_SFR = 20. # Chandar+17 (HA)
-LMC_SFR = 0.25 # Chandar+17 (HA)
+LMC_SFR = 0.25 # Chandar+17
+SMC_SFR = 0.06 # Chandar+17
+NGC4214_SFR = 0.11 # Chandar+17
+NGC4449_SFR = 0.35 # Chandar+17
+M83_SFR = 2.65 # Chandar+17
+M51_SFR = 3.20 # Chandar+17
+Ant_SFR = 20. # Chandar+17
+NGC3256_SFR = 50. # Chandar+17
+###
 M33_SFR = 0.56 # Javadi+16
-M51_SFR = 3.20 # Chandar+17 (HA)
-M83_SFR = 2.65 # Chandar+17 (HA)
 M100_SFR = 2.6 # Wilson+09
 NGC300_SFR = 0.3 # Kang+
-NGC3256_SFR = 50 # Chandar+17 (HA)
-NGC4214_SFR = 0.11 # Chandar+17 (HA)
-NGC4449_SFR = 0.35 # Chandar+17 (HA)
 NGC4526_SFR = 0.03 # Amblard+14
 NGC4826_SFR = 0.19 # Braun+94
 NGC6946_SFR = 3.24 # Leroy+08
-SMC_SFR = 0.06 # Chandar+17 (HA)
+### PHANGS
+NGC1433_SFR = 0.56
+NGC1559_SFR = 3.76
+NGC1566_SFR = 3.21
+NGC1672_SFR = 6.6
+NGC1792_SFR = 3.23
+NGC2775_SFR = 0.87
+NGC3351_SFR = 0.87
+NGC3627_SFR = 3.31
+NGC4303_SFR = 4.25
+NGC4321_SFR = 2.43
+NGC4535_SFR = 1.23
+NGC4548_SFR = 0.34
+NGC4571_SFR = 0.26
+NGC4654_SFR = 3.06
+NGC4826_SFR = 0.17
+NGC5248_SFR = 1.66
 ### Star Formation Rates (Corrected) ###
+LMC_SFRC1 = LMC_SFR * 0.70
+SMC_SFRC1 = SMC_SFR * 0.90
+NGC4214_SFRC1 = NGC4214_SFR * 1.00
+NGC4449_SFRC1 = NGC4449_SFR * 0.85
+M83_SFRC1 = M83_SFR * 0.60
+M51_SFRC1 = M51_SFR * 0.90
+Ant_SFRC1 = Ant_SFR * 1.00
+NGC3256_SFRC1 = NGC3256_SFR * 1.00
+###
 LMC_SFRC = np.array([0.25, 0.32, 0.22]) * 0.70
 SMC_SFRC = np.array([0.06, 0.16, 0.14]) * 0.90
 NGC4214_SFRC = np.array([0.11, 0.07, 0.06]) * 1.00
@@ -114,11 +141,7 @@ NGC4449_dist = 3.8*1E6
 NGC3627_dist = 10100000.
 NGC6744_dist = 7300000.
 SMC_dist = 0.06*1E6
-### Number of Clusters ###
-Ant_Num_age3 = 990
-LMC_Num_age3 = 121
-M51_Num_age3 = 633
-M83_Num_age3 = 245
+### Folder Locations ###
 DSS_folder = '/Users/Angus/Documents/SD/DSS/'
 HST_folder = '/Users/Angus/Documents/SD/HST/'
 ### Cluster Completeness Limits ###
@@ -140,11 +163,11 @@ SMC_SC_complimits = [np.power(10, 2.5), np.power(10, 3.2), np.power(10, 3.25)]
 ###
 NGC0045_SC_complimits = [np.power(10, 2.5), np.power(10, 3.0), np.power(10, 3.3)]
 NGC0628_SC_complimits = [np.power(10, 3.7), np.power(10, 3.7), np.power(10, 3.7)]
-NGC1433_SC_complimits = [np.power(10, 2.5), np.power(10, 3.0), np.power(10, 3.6)]
-NGC1566_SC_complimits = [np.power(10, 3.2), np.power(10, 3.8), np.power(10, 4.3)]
+# NGC1433_SC_complimits = [np.power(10, 2.5), np.power(10, 3.0), np.power(10, 3.6)]
+# NGC1566_SC_complimits = [np.power(10, 3.2), np.power(10, 3.8), np.power(10, 4.3)]
 NGC1705_SC_complimits = [np.power(10, 2.5), np.power(10, 3.0), np.power(10, 3.5)]
 NGC3344_SC_complimits = [np.power(10, 2.5), np.power(10, 3.2), np.power(10, 3.6)]
-NGC3351_SC_complimits = [np.power(10, 2.7), np.power(10, 3.3), np.power(10, 4.0)]
+# NGC3351_SC_complimits = [np.power(10, 2.7), np.power(10, 3.3), np.power(10, 4.0)]
 NGC3738_SC_complimits = [np.power(10, 2.5), np.power(10, 3.2), np.power(10, 3.5)]
 NGC4242_SC_complimits = [np.power(10, 2.5), np.power(10, 3.0), np.power(10, 3.3)]
 NGC4395_SC_complimits = [np.power(10, 2.5), np.power(10, 3.0), np.power(10, 3.5)]
@@ -156,6 +179,23 @@ NGC5474_SC_complimits = [np.power(10, 2.5), np.power(10, 3.0), np.power(10, 3.3)
 NGC5477_SC_complimits = [np.power(10, 2.5), np.power(10, 3.0), np.power(10, 3.25)]
 NGC6503_SC_complimits = [np.power(10, 2.5), np.power(10, 3.0), np.power(10, 3.3)]
 NGC7793_SC_complimits = [np.power(10, 2.5), np.power(10, 3.2), np.power(10, 3.5)]
+### PHANGS
+NGC1433_SC_complimits = [np.power(10, 3.0), np.power(10, 3.3), np.power(10, 3.7)]
+NGC1559_SC_complimits = [np.power(10, 4.2), np.power(10, 4.5), np.power(10, 4.8)]
+NGC1566_SC_complimits = [np.power(10, 4.0), np.power(10, 4.2), np.power(10, 4.5)]
+NGC1672_SC_complimits = [np.power(10, 4.0), np.power(10, 4.2), np.power(10, 4.5)]
+NGC1792_SC_complimits = [np.power(10, 4.3), np.power(10, 4.5), np.power(10, 4.8)]
+NGC2775_SC_complimits = [np.power(10, 4.3), np.power(10, 4.5), np.power(10, 4.7)]
+NGC3351_SC_complimits = [np.power(10, 3.2), np.power(10, 3.5), np.power(10, 3.8)]
+NGC3627_SC_complimits = [np.power(10, 3.9), np.power(10, 4.2), np.power(10, 4.5)]
+NGC4303_SC_complimits = [np.power(10, 4.4), np.power(10, 4.4), np.power(10, 4.7)]
+NGC4321_SC_complimits = [np.power(10, 4.2), np.power(10, 4.4), np.power(10, 4.7)]
+NGC4535_SC_complimits = [np.power(10, 3.7), np.power(10, 3.9), np.power(10, 4.2)]
+NGC4548_SC_complimits = [np.power(10, 3.4), np.power(10, 3.5), np.power(10, 3.7)]
+NGC4571_SC_complimits = [np.power(10, 3.2), np.power(10, 3.5), np.power(10, 3.7)]
+NGC4654_SC_complimits = [np.power(10, 4.2), np.power(10, 4.3), np.power(10, 4.4)]
+NGC4826_SC_complimits = [np.power(10, 3.2), np.power(10, 3.3), np.power(10, 4.0)]
+NGC5248_SC_complimits = [np.power(10, 3.7), np.power(10, 4.0), np.power(10, 4.2)]
 ### GMC Completeness Limits ###
 Ant_Z14_GMC_complimits = np.power(10, 6.7)
 LMC_W11_GMC_complimits = 3E4 # log = 4.47
@@ -178,27 +218,6 @@ M51_C14_GMC_complimits_mf = np.power(10, 6.1) # 5% = 6.1
 M83_F17_GMC_complimits_mf = np.power(10, 6.1) # 5% = 6.1
 NGC3256_N_complimits_mf = np.power(10, 7.6) # 5% = 7.6
 NGC3627_N_complimits_mf = np.power(10, 6.5) # 5% = 6.6
-### Correction Factors ###
-Ant_PowerLaw_F = [0.589, 0.536, 0.486]
-Ant_Schechter5_F = [0.286, 0.207, 0.135]
-LMC_PowerLaw_F = [0.898, 0.754, 0.744]
-LMC_Schechter5_F = [0.819, 0.566, 0.549]
-M51_PowerLaw_F = [0.693, 0.610, 0.589]
-M51_Schechter5_F = [0.460, 0.319, 0.286]
-M83_PowerLaw_F = [0.734, 0.651, 0.589]
-M83_Schechter5_F = [0.531, 0.389, 0.286]
-NGC3256_PowerLaw_F = [0.340, 0.340, 0.280]
-NGC3256_Schechter5_F = [0.011, 0.011, 0.001]
-NGC4214_PowerLaw_F = [0.898, 0.795, 0.795]
-NGC4214_Schechter5_F = [0.819, 0.639, 0.639]
-NGC4449_PowerLaw_F = [0.713, 0.589, 0.589]
-NGC4449_Schechter5_F = [0.495, 0.286, 0.286]
-SMC_PowerLaw_F = [0.898, 0.754, 0.744]
-SMC_Schechter5_F = [0.819, 0.566, 0.549]
-Test_PowerLaw_F = [0.589, 0.589, 0.589]
-Test_Schechter5_F = [0.286, 0.286, 0.286]
-Test37_PowerLaw_F = [0.651, 0.651, 0.651]
-Test37_Schechter5_F = [0.389, 0.389, 0.389]
 
 #------------------------------------------------------------------------------
 ###
@@ -6179,102 +6198,6 @@ def plotaxes_threehistogram(gal_array, galname, complimits, ageflag, outflag):
 		n, bins, bins_width, bins_centre, n_fit, bins_fit, n_dM, n_fit_dM, n_dlogM, n_fit_dlogM, ncum, ncum_fit, n_fit_err, n_fit_dM_err, n_fit_dlogM_err = makearrayhist(gal_array_masslimit, mass_bins_log, np.nanmax(complimits))
 		histogram_threeplot(galname, age_label, bins, n_dM, bins_fit, n_fit_dM, n_fit_dM_err, np.nanmax(complimits), array_plot,
 			'^')
- 
-def calccorrectionfactor(array1, complimits):
-
-	'''
-	Function: Calculated correction factor for age limits
-	'''
-
-	totalmass = np.sum(array1)
-	print('The total mass in the synthetic cluster catalog is: {:.3e}'.format(totalmass))
-
-	correctionfactorout = []
-	for i in range(0, len(complimits)):
-
-		restrictedmass = np.sum(array1[array1 > complimits[i]])
-		correctionfactor = restrictedmass / totalmass
-		correctionfactorout.append(correctionfactor)
-		print('Output: {:.3e}, {:.3f}'.format(restrictedmass, correctionfactor))
-
-	if len(correctionfactorout) == 1:
-		correctionfactorout = correctionfactorout[0]
-
-	return correctionfactorout
-
-def calccorrectionfactor1(array1, lowlimit):
-
-	'''
-	Function: Calculated correction factor for age limits
-	'''
-
-	totalmass = np.sum(array1)
-	print('The total mass in the synthetic cluster catalog is: {:.3e}'.format(totalmass))
-	print('The min/max mass in the synthetic cluster catalog is: {:.3e}/{:.3e}'.format(np.nanmin(array1), np.nanmax(array1)))
-	restrictedmass = np.sum(array1[array1 > lowlimit])
-	correctionfactor = restrictedmass / totalmass
-	print('Output (1): Cut at {:.2f} - Correction Factor {:.3f}'.format(np.log10(lowlimit), correctionfactor))
-
-	return correctionfactor
- 
-def calccorrectionfactor2(array1, lowlimit, highlimit):
-
-	'''
-	Function: Calculated correction factor for age limits
-	'''
-
-	array1_belowlimit = array1[array1 < highlimit]
-	totalmass = np.sum(array1_belowlimit)
-	print('The total mass in the synthetic cluster catalog is: {:.3e} below log M = {:.2f}'.format(totalmass, np.log10(highlimit)))
-	print('The min mass in the synthetic cluster catalog is: {:.3e}'.format(np.nanmin(array1)))
-	restrictedmass = np.sum(array1[array1 > lowlimit])
-	correctionfactor = restrictedmass / totalmass
-	print('Output (2): Cut at {:.2f} - Correction Factor {:.3f}'.format(np.log10(lowlimit), correctionfactor))
-
-	return correctionfactor
-
-def calculategamma(gal_array, complimits, corrfactorarray, sfrc, galname):
-
-	'''
-	Function: Calculate Gamma
-	'''
-
-	# Create age bins
-	gal_array_age1 = gal_array[gal_array[:,6] <= 10.01*1E6]
-	gal_array_age1_masslimit = gal_array_age1[gal_array_age1[:,4] > complimits[0]]
-	gal_array_age2_tmp = gal_array[gal_array[:,6] > 10.01*1E6]
-	gal_array_age2 = gal_array_age2_tmp[gal_array_age2_tmp[:,6] <= 100.01*1E6]
-	gal_array_age2_masslimit = gal_array_age2[gal_array_age2[:,4] > complimits[1]]
-	gal_array_age3_tmp = gal_array[gal_array[:,6] > 100.01*1E6]
-	gal_array_age3 = gal_array_age3_tmp[gal_array_age3_tmp[:,6] <= 400.01*1E6]
-	gal_array_age3_masslimit = gal_array_age3[gal_array_age3[:,4] > complimits[2]]
-	gal_array_age5_tmp = gal_array[gal_array[:,6] > 0.99*1E6]
-	gal_array_age5 = gal_array_age5_tmp[gal_array_age5_tmp[:,6] <= 200.01*1E6]
-	gal_array_age5_masslimit = gal_array_age5[gal_array_age5[:,4] > complimits[2]]
-
-	print('------ ' + galname.replace('_', '\\_') + ' [$<$ 10, 10 - 100, 100 - 400, 1 - 200]\\\\')
-	print('Num: [{}, {}, {}, {}] \\\\'.format(len(gal_array_age1_masslimit), len(gal_array_age2_masslimit), len(gal_array_age3_masslimit), len(gal_array_age5_masslimit)))
-	totalmass_age1 = np.sum(gal_array_age1_masslimit[:,4])
-	totalmass_age2 = np.sum(gal_array_age2_masslimit[:,4])
-	totalmass_age3 = np.sum(gal_array_age3_masslimit[:,4])
-	totalmass_age5 = np.sum(gal_array_age5_masslimit[:,4])
-	print('Total Masses: [{:.2e}, {:.2e}, {:.2e}, {:.2e}] \\\\'.format(totalmass_age1, totalmass_age2, totalmass_age3, totalmass_age5))
-	totalmasscorr_age1 = totalmass_age1 / corrfactorarray[0]
-	totalmasscorr_age2 = totalmass_age2 / corrfactorarray[1]
-	totalmasscorr_age3 = totalmass_age3 / corrfactorarray[2]
-	totalmasscorr_age5 = totalmass_age5 / corrfactorarray[2]
-	print('Total Masses (corrected): [{:.2e}, {:.2e}, {:.2e}, {:.2e}] \\\\'.format(totalmasscorr_age1, totalmasscorr_age2, totalmasscorr_age3, totalmasscorr_age5))
-	cfr_age1 = totalmasscorr_age1 / (9*1E6)
-	cfr_age2 = totalmasscorr_age2 / (1E8 - 1E7)
-	cfr_age3 = totalmasscorr_age3 / ((400 * 1E6) - 1E8)
-	cfr_age5 = totalmasscorr_age5 / ((200 * 1E6) - 1E6)
-	print('CFR: [{:.2e}, {:.2e}, {:.2e}, {:.2e}] \\\\'.format(cfr_age1, cfr_age2, cfr_age3, cfr_age5))
-	print('SFR (corrected): [{:.3f}, {:.3f}, {:.3f}, {:.3f}] \\\\'.format(sfrc[0], sfrc[1], sfrc[2], sfrc[1]))
-	gamma_age1 = cfr_age1 / sfrc[0]
-	gamma_age2 = cfr_age2 / sfrc[1]
-	gamma_age3 = cfr_age3 / sfrc[2]
-	gamma_age5 = cfr_age5 / sfrc[1]
-	print('Gamma: [{:.3f}, {:.3f}, {:.3f}, {:.3f}] \\\\'.format(gamma_age1, gamma_age2, gamma_age3, gamma_age5))
 
 def calculateslopeandcorragebins(x, y1, y2, y3):
 
@@ -6670,6 +6593,11 @@ def returnarraywhereabovelimit(gal_array, array_len, ageflag, complimits):
 
 	return output
 
+#------------------------------------------------------------------------------
+###
+# (12) Code Snippets (Analysis II - Make Plots)
+###
+
 def rungalaxyP_output(galname, np_SCP_B_array, np_SCP_C_array, SCP_B_complimits, SCP_C_complimits):
 
 	
@@ -6881,27 +6809,29 @@ def rungalaxyP_v1_1_output(galname, np_SCP_C_array, SCP_C_complimits):
 	plt.savefig('./FiguresSC/{}_SCP_AgeBins_01_Like.png'.format(galname))
 	plt.close()
 
-	### --==--==--==-- ###
-	print('>>>')
-	print('>>> {}_SCP_AgeBins_02_MSF'.format(galname))
-	print('>>>')
-	fig, axes = plt.subplots(1, 3, sharex = 'all', sharey = 'all', figsize = (36, 12))
-	fig.subplots_adjust(hspace = 0, wspace = 0, bottom = 0.15)
-	plotaxes_mspecfit(np_SCP_C_array, '{} (< 10 Myr)'.format(galname), SCP_C_complimits, axes[0], 1, 0, 0)
-	plotaxes_mspecfit(np_SCP_C_array, '(10 - 100 Myr)', SCP_C_complimits, axes[1], 2, 0, 0)
-	plotaxes_mspecfit(np_SCP_C_array, '(100 - 400 Myr)', SCP_C_complimits, axes[2], 3, 0, 0)
-	fig.text(0.5, 0.05, r'log (M/M$_\odot$)', ha = 'center', fontsize = 45)
-	fig.text(0.05, 0.5, r'log N (> M)', va = 'center', rotation = 'vertical', fontsize = 45)
-	plt.xscale('log', nonposx = 'clip')
-	plt.yscale('log', nonposy = 'clip')
-	axes[0].xaxis.set_major_formatter(log10_labels_format)
-	axes[0].yaxis.set_major_formatter(log10_labels_format)
-	axes[0].minorticks_off()
-	plt.axis([np.power(10, 3), np.power(10, 7.5)] + [np.power(10, -0.5), np.power(10, 3.5)])
-	plt.xticks([1E4, 1E5, 1E6, 1E7])
-	plt.yticks([1E0, 1E1, 1E2, 1E3])
-	plt.savefig('./FiguresSC/{}_SCP_AgeBins_02_MSF.png'.format(galname))
-	plt.close()
+	if False:
+
+		### --==--==--==-- ###
+		print('>>>')
+		print('>>> {}_SCP_AgeBins_02_MSF'.format(galname))
+		print('>>>')
+		fig, axes = plt.subplots(1, 3, sharex = 'all', sharey = 'all', figsize = (36, 12))
+		fig.subplots_adjust(hspace = 0, wspace = 0, bottom = 0.15)
+		plotaxes_mspecfit(np_SCP_C_array, '{} (< 10 Myr)'.format(galname), SCP_C_complimits, axes[0], 1, 0, 0)
+		plotaxes_mspecfit(np_SCP_C_array, '(10 - 100 Myr)', SCP_C_complimits, axes[1], 2, 0, 0)
+		plotaxes_mspecfit(np_SCP_C_array, '(100 - 400 Myr)', SCP_C_complimits, axes[2], 3, 0, 0)
+		fig.text(0.5, 0.05, r'log (M/M$_\odot$)', ha = 'center', fontsize = 45)
+		fig.text(0.05, 0.5, r'log N (> M)', va = 'center', rotation = 'vertical', fontsize = 45)
+		plt.xscale('log', nonposx = 'clip')
+		plt.yscale('log', nonposy = 'clip')
+		axes[0].xaxis.set_major_formatter(log10_labels_format)
+		axes[0].yaxis.set_major_formatter(log10_labels_format)
+		axes[0].minorticks_off()
+		plt.axis([np.power(10, 3), np.power(10, 7.5)] + [np.power(10, -0.5), np.power(10, 3.5)])
+		plt.xticks([1E4, 1E5, 1E6, 1E7])
+		plt.yticks([1E0, 1E1, 1E2, 1E3])
+		plt.savefig('./FiguresSC/{}_SCP_AgeBins_02_MSF.png'.format(galname))
+		plt.close()
 
 	### --==--==--==-- ###
 	print('>>>')
@@ -6951,8 +6881,215 @@ def rungalaxyP_v1_1_output(galname, np_SCP_C_array, SCP_C_complimits):
 
 #------------------------------------------------------------------------------
 ###
-# (12) Code Snippets (Analysis II - Make Plots)
+# (13) Code Snippets (Analysis III)
 ###
 
 
+def calccorrectionfactor(array1, complimits):
 
+	'''
+	Function: Calculated correction factor for age limits
+	'''
+
+	totalmass = np.sum(array1)
+	print('The total mass in the synthetic cluster catalog is: {:.3e}'.format(totalmass))
+
+	correctionfactorout = []
+	for i in range(0, len(complimits)):
+
+		restrictedmass = np.sum(array1[array1 > complimits[i]])
+		correctionfactor = restrictedmass / totalmass
+		correctionfactorout.append(correctionfactor)
+		print('Output: {:.3e}, {:.3f}'.format(restrictedmass, correctionfactor))
+
+	if len(correctionfactorout) == 1:
+		correctionfactorout = correctionfactorout[0]
+
+	return correctionfactorout
+
+def calccorrectionfactor1(array1, lowlimit, output = False):
+
+	'''
+	Function: Calculated correction factor for age limits
+	'''
+
+	totalmass = np.sum(array1)
+	restrictedmass = np.sum(array1[array1 > lowlimit])
+	correctionfactor = restrictedmass / totalmass
+	
+	if output == True:
+		print('The total mass in the synthetic cluster catalog is: {:.3e}'.format(totalmass))
+		print('The min/max mass in the synthetic cluster catalog is: {:.3e}/{:.3e}'.format(np.nanmin(array1), np.nanmax(array1)))
+		print('Output (1): Cut at {:.2f} - Correction Factor {:.3f}'.format(np.log10(lowlimit), correctionfactor))
+
+	return correctionfactor
+ 
+def calccorrectionfactor2(array1, lowlimit, highlimit, output = False):
+
+	'''
+	Function: Calculated correction factor for age limits
+	'''
+
+	array1_belowlimit = array1[array1 < highlimit]
+	totalmass = np.sum(array1_belowlimit)
+	restrictedmass = np.sum(array1[array1 > lowlimit])
+	correctionfactor = restrictedmass / totalmass
+
+	if output == True:
+		print('The total mass in the synthetic cluster catalog is: {:.3e} below log M = {:.2f}'.format(totalmass, np.log10(highlimit)))
+		print('The min mass in the synthetic cluster catalog is: {:.3e}'.format(np.nanmin(array1)))
+		print('Output (2): Cut at {:.2f} - Correction Factor {:.3f}'.format(np.log10(lowlimit), correctionfactor))
+
+	return correctionfactor
+
+def calculategamma_oneage(gal_array, complimit, corrfactor, sfrc, galname):
+
+	'''
+	Function: Calculate Gamma for one age
+	'''
+
+	# Create age bins
+	gal_array_age3_tmp = gal_array[gal_array[:,6] > 100.01*1E6]
+	gal_array_age3 = gal_array_age3_tmp[gal_array_age3_tmp[:,6] <= 400.01*1E6]
+	gal_array_age3_masslimit = gal_array_age3[gal_array_age3[:,4] > complimit]
+	totalmass_age3 = np.sum(gal_array_age3_masslimit[:,4])
+	totalmasscorr_age3 = totalmass_age3 / corrfactor
+	cfr_age3 = totalmasscorr_age3 / ((400 * 1E6) - 1E8)
+	gamma_age3 = cfr_age3 / sfrc
+	print('{} - Gamma = {:.3f}'.format(galname, gamma_age3))
+
+def calculategamma(gal_array, complimits, corrfactorarray, sfrc, galname):
+
+	'''
+	Function: Calculate Gamma with input corrfactor
+	'''
+	gal_array_age1 = gal_array[gal_array[:,6] <= 10.01*1E6]
+	gal_array_age1_masslimit = gal_array_age1[gal_array_age1[:,4] > complimits[0]]
+	
+	gal_array_age2_tmp = gal_array[gal_array[:,6] > 10.01*1E6]
+	gal_array_age2 = gal_array_age2_tmp[gal_array_age2_tmp[:,6] <= 100.01*1E6]
+	gal_array_age2_masslimit = gal_array_age2[gal_array_age2[:,4] > complimits[1]]
+
+	gal_array_age3_tmp = gal_array[gal_array[:,6] > 100.01*1E6]
+	gal_array_age3 = gal_array_age3_tmp[gal_array_age3_tmp[:,6] <= 400.01*1E6]
+	gal_array_age3_masslimit = gal_array_age3[gal_array_age3[:,4] > complimits[2]]
+	
+	gal_array_age5_tmp = gal_array[gal_array[:,6] > 0.99*1E6]
+	gal_array_age5 = gal_array_age5_tmp[gal_array_age5_tmp[:,6] <= 200.01*1E6]
+	gal_array_age5_masslimit = gal_array_age5[gal_array_age5[:,4] > complimits[2]]
+
+	print('------ ' + galname.replace('_', '\\_') + ' [$<$ 10, 10 - 100, 100 - 400, 1 - 200]\\\\')
+	print('Num: [{}, {}, {}, {}] \\\\'.format(len(gal_array_age1_masslimit), len(gal_array_age2_masslimit), len(gal_array_age3_masslimit), len(gal_array_age5_masslimit)))
+	totalmass_age1 = np.sum(gal_array_age1_masslimit[:,4])
+	totalmass_age2 = np.sum(gal_array_age2_masslimit[:,4])
+	totalmass_age3 = np.sum(gal_array_age3_masslimit[:,4])
+	totalmass_age5 = np.sum(gal_array_age5_masslimit[:,4])
+	print('Total Masses: [{:.2e}, {:.2e}, {:.2e}, {:.2e}] \\\\'.format(totalmass_age1, totalmass_age2, totalmass_age3, totalmass_age5))
+	totalmasscorr_age1 = totalmass_age1 / corrfactorarray[0]
+	totalmasscorr_age2 = totalmass_age2 / corrfactorarray[1]
+	totalmasscorr_age3 = totalmass_age3 / corrfactorarray[2]
+	totalmasscorr_age5 = totalmass_age5 / corrfactorarray[2]
+	print('Total Masses (corrected): [{:.2e}, {:.2e}, {:.2e}, {:.2e}] \\\\'.format(totalmasscorr_age1, totalmasscorr_age2, totalmasscorr_age3, totalmasscorr_age5))
+	cfr_age1 = totalmasscorr_age1 / (9*1E6)
+	cfr_age2 = totalmasscorr_age2 / (1E8 - 1E7)
+	cfr_age3 = totalmasscorr_age3 / ((400 * 1E6) - 1E8)
+	cfr_age5 = totalmasscorr_age5 / ((200 * 1E6) - 1E6)
+	print('CFR: [{:.2e}, {:.2e}, {:.2e}, {:.2e}] \\\\'.format(cfr_age1, cfr_age2, cfr_age3, cfr_age5))
+	print('SFR (input): [{:.3f}, {:.3f}, {:.3f}, {:.3f}] \\\\'.format(sfrc[0], sfrc[1], sfrc[2], sfrc[1]))
+	gamma_age1 = cfr_age1 / sfrc[0]
+	gamma_age2 = cfr_age2 / sfrc[1]
+	gamma_age3 = cfr_age3 / sfrc[2]
+	gamma_age5 = cfr_age5 / sfrc[1]
+	print('Gamma: [{:.3f}, {:.3f}, {:.3f}, {:.3f}] \\\\'.format(gamma_age1, gamma_age2, gamma_age3, gamma_age5))
+
+def read_powerlaw_contlog_nodest():
+
+	'''
+	Function: 
+	'''
+	
+	# print('>>> Running - {}'.format(inspect.currentframe().f_code.co_name))
+
+	powerlaw_contlog_nodest_file = open('./SimSCOutput/powerlaw_contlog_nodest.txt', 'r')
+	powerlaw_contlog_nodest_array = []
+	###
+	i = 1
+	while 1:
+		powerlaw_contlog_nodest_line = powerlaw_contlog_nodest_file.readline()
+		if not powerlaw_contlog_nodest_line:
+			break
+		else:
+			powerlaw_contlog_nodest_cols = powerlaw_contlog_nodest_line.split(';')
+			testvar = 2
+			if len(powerlaw_contlog_nodest_cols) != testvar:
+				print('Warning - Length of Data {} != {}'.format(len(powerlaw_contlog_nodest_cols), testvar))
+			else:
+				arrayentry = ['powerlaw_contlog_nodest', i, -1, -1, float(powerlaw_contlog_nodest_cols[0]), -1, float(powerlaw_contlog_nodest_cols[1]), -1]
+				powerlaw_contlog_nodest_array.append(arrayentry)
+			i = i + 1
+
+	np_powerlaw_contlog_nodest_array = converttonumpy(powerlaw_contlog_nodest_array, 'powerlaw_contlog_nodest', output = False)
+
+	return np_powerlaw_contlog_nodest_array
+
+def calculategamma_v2(gal_array, complimits, sfrc, galname, alt_limit = False):
+
+	'''
+	Function: Calculate Gamma with calculated corrfactor
+	'''
+
+	# Read in array
+	np_powerlaw_contlog_nodest_array = read_powerlaw_contlog_nodest()
+	corrfactor1 = calccorrectionfactor1(np_powerlaw_contlog_nodest_array[:,4], complimits[0])
+	corrfactor2 = calccorrectionfactor1(np_powerlaw_contlog_nodest_array[:,4], complimits[1])
+	corrfactor3 = calccorrectionfactor1(np_powerlaw_contlog_nodest_array[:,4], complimits[2])
+
+	if alt_limit == True:
+
+		print ('-> Check: Alt Endpoints == True')
+		gal_array_age1 = gal_array[gal_array[:,6] < 10.01*1E6]
+		gal_array_age1_masslimit = gal_array_age1[gal_array_age1[:,4] > complimits[0]]
+
+		gal_array_age2_tmp = gal_array[gal_array[:,6] >= 10.01*1E6]
+		gal_array_age2 = gal_array_age2_tmp[gal_array_age2_tmp[:,6] < 100.01*1E6]
+		gal_array_age2_masslimit = gal_array_age2[gal_array_age2[:,4] > complimits[1]]
+
+		gal_array_age3_tmp = gal_array[gal_array[:,6] >= 100.01*1E6]
+		gal_array_age3 = gal_array_age3_tmp[gal_array_age3_tmp[:,6] <= 400.01*1E6]
+		gal_array_age3_masslimit = gal_array_age3[gal_array_age3[:,4] > complimits[2]]
+
+	else:
+
+		gal_array_age1 = gal_array[gal_array[:,6] <= 10.01*1E6]
+		gal_array_age1_masslimit = gal_array_age1[gal_array_age1[:,4] > complimits[0]]
+
+		gal_array_age2_tmp = gal_array[gal_array[:,6] > 10.01*1E6]
+		gal_array_age2 = gal_array_age2_tmp[gal_array_age2_tmp[:,6] <= 100.01*1E6]
+		gal_array_age2_masslimit = gal_array_age2[gal_array_age2[:,4] > complimits[1]]
+
+		gal_array_age3_tmp = gal_array[gal_array[:,6] > 100.01*1E6]
+		gal_array_age3 = gal_array_age3_tmp[gal_array_age3_tmp[:,6] <= 400.01*1E6]
+		gal_array_age3_masslimit = gal_array_age3[gal_array_age3[:,4] > complimits[2]]
+
+
+	print('------ ' + galname.replace('_', '\\_') + ' [< 10, 10 - 100, 100 - 400]')
+	print('Limits: [{:.1f}, {:.1f}, {:.1f}]'.format(np.log10(complimits[0]), np.log10(complimits[1]), np.log10(complimits[2])))
+	print('Corr Factor: [{:.3f}, {:.3f}, {:.3f}]'.format(corrfactor1, corrfactor2, corrfactor3))
+	print('Num: [{}, {}, {}]'.format(len(gal_array_age1_masslimit), len(gal_array_age2_masslimit), len(gal_array_age3_masslimit)))
+	totalmass_age1 = np.sum(gal_array_age1_masslimit[:,4])
+	totalmass_age2 = np.sum(gal_array_age2_masslimit[:,4])
+	totalmass_age3 = np.sum(gal_array_age3_masslimit[:,4])
+	print('Total Masses: [{:.2e}, {:.2e}, {:.2e}]'.format(totalmass_age1, totalmass_age2, totalmass_age3))
+	totalmasscorr_age1 = totalmass_age1 / corrfactor1
+	totalmasscorr_age2 = totalmass_age2 / corrfactor2
+	totalmasscorr_age3 = totalmass_age3 / corrfactor3
+	print('Total Masses (corrected): [{:.2e}, {:.2e}, {:.2e}]'.format(totalmasscorr_age1, totalmasscorr_age2, totalmasscorr_age3))
+	cfr_age1 = totalmasscorr_age1 / (9*1E6)
+	cfr_age2 = totalmasscorr_age2 / (1E8 - 1E7)
+	cfr_age3 = totalmasscorr_age3 / ((400 * 1E6) - 1E8)
+	print('CFR: [{:.2e}, {:.2e}, {:.2e}]'.format(cfr_age1, cfr_age2, cfr_age3))
+	print('SFR (input): [{:.3f}, {:.3f}, {:.3f}]'.format(sfrc[0], sfrc[1], sfrc[2]))
+	gamma_age1 = cfr_age1 / sfrc[0]
+	gamma_age2 = cfr_age2 / sfrc[1]
+	gamma_age3 = cfr_age3 / sfrc[2]
+	print('Gamma: [{:.3f}, {:.3f}, {:.3f}]'.format(gamma_age1, gamma_age2, gamma_age3))

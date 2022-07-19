@@ -55,7 +55,7 @@ List of Functions:
 - plotclumps_histogram2(array1, complimits_val)
 - plotclumps_cdf(array1, array2, complimits_val)
 - plotclumps_mr_clouds(axes, np_Full_array, np_array, np_NL_array, radiuslimit, plotcolour, plotsymbol, plotsym, legendname, masslimit = 0)
-- plotclumps_mr_leaves(axes, np_Full_array, np_array, radiuslimit, plotcolour, plotsymbol, plotsym, legendname, masslimit = 0, radiuscut = 1):
+- plotclumps_mr_leaves(axes, np_Full_array, np_array, radiuslimit, plotcolour, plotsymbol, plotsym, legendname, masslimit = 0, radiuscut = 1)
 - curvefit_powerlaw_clumps(array1, array2, plotaxes, flag_mr = 1, legendname = '')
 
 # (7) Code Snippets (Extreme)
@@ -106,10 +106,6 @@ List of Functions:
 - mspecfitplot(array1, array1_masslimit, complimits_val, plotaxes, galname, agename, errorflag, plotflag = 1, flagcol = 1)
 - plotaxes_twohistogram(gal_array, galname, complimits, complimits_gmc, gal_array_gmc, plotaxes, ageflag, outflag)
 - plotaxes_threehistogram(gal_array, galname, complimits, ageflag, outflag)
-- calccorrectionfactor(array1, complimits)
-- calccorrectionfactor1(array1, lowlimit)
-- calccorrectionfactor2(array1, lowlimit, highlimit)
-- calculategamma(gal_array, complimits, corrfactorarray, sfrc, galname)
 - calculateslopeandcorragebins(x, y1, y2, y3)
 - calculateslopeandcorragebinsx(x1, x2, x3, y)
 - calculateslopeandcorragebin(x, y)
@@ -126,7 +122,16 @@ List of Functions:
 - calculatemaxmass(mmaxlist)
 - calculatetotalmassA5(gal_array, complimits)
 - returnarraywhereabovelimit(gal_array, array_len, ageflag, complimits)
+
+# (12) Code Snippets (Analysis II - Make Plots)
 - rungalaxyP_output(galname, np_SCP_B_array, np_SCP_C_array, SCP_B_complimits, SCP_C_complimits)
 - rungalaxyP_v1_1_output(galname, np_SCP_C_array, SCP_C_complimits)
 
-# (12) Code Snippets (Analysis II - Make Plots)
+# (13) Code Snippets (Analysis III)
+- calccorrectionfactor(array1, complimits)
+- calccorrectionfactor1(array1, lowlimit)
+- calccorrectionfactor2(array1, lowlimit, highlimit)
+- calculategamma_oneage(gal_array, complimit, corrfactor, sfrc, galname)
+- calculategamma(gal_array, complimits, corrfactorarray, sfrc, galname)
+- read_powerlaw_contlog_nodest()
+- calculategamma_v2(gal_array, complimits, sfrc, galname, alt_limit = False)
